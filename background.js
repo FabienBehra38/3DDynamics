@@ -15,6 +15,7 @@ function initBackgroundShader() {
 function Background(heightfieldTexture) {
     this.heightfieldTexture = heightfieldTexture;
 
+    //test commit
     // un tableau contenant les positions des sommets (sur CPU donc)
     var vertices = [
 	-1.0,-1.0, 0.99,
