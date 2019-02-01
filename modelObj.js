@@ -96,6 +96,7 @@ Model.prototype.handleLoadedObject = function(objData) {
 
 
 Model.prototype.initParameters = function() {
+	this.setPosition(0,0);
     this.currentTransform = mat4.identity();
     this.modelMatrix = mat4.identity();
     this.viewMatrix = mat4.identity();
@@ -115,6 +116,9 @@ Model.prototype.setParameters = function(elapsed) {
 Model.prototype.move = function(x,y) {
     // faire bouger votre vaisseau ici
     // --> modifier currentTransform pour ca
+	this.viewMatrix = mat4.lookAt([0,4,0], [this.position[0]+x,0,this.position[1]+y], [-1,0,0]);
+	// this.setPosition(x,y);
+	this.setPosition(this.position[0]+x, this.position[1]+y);
 
 }
 
