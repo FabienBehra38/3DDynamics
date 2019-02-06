@@ -101,12 +101,13 @@ Model.prototype.initParameters = function() {
     this.modelMatrix = mat4.identity();
     this.viewMatrix = mat4.identity();
     this.projMatrix = mat4.identity();
+    this.setPosition(0,0);
 
     // trouver les model/view/proj matrices pour voir l'objet comme vous le souhaitez
 	this.modelMatrix = mat4.scale(this.modelMatrix, [0.1,0.1,0.1]);
 	//this.viewMatrix = lookAt(eye,center,up,dest);
 	this.viewMatrix = mat4.lookAt([0,4,0], [0,0,0], [-1,0,0]);
-	this.projMatrix = mat4.perspective(45.0,1,0.1,30)
+	this.projMatrix = mat4.perspective(45.0,1,0.1,30);
 }
 
 Model.prototype.setParameters = function(elapsed) {
@@ -119,6 +120,19 @@ Model.prototype.move = function(x,y) {
 	this.viewMatrix = mat4.lookAt([0,4,0], [this.position[0]+x,0,this.position[1]+y], [-1,0,0]);
 	// this.setPosition(x,y);
 	this.setPosition(this.position[0]+x, this.position[1]+y);
+
+	//Barriere droite
+	if ((this.getBBox()[0][0])<1) {
+		this.viewMatrix = mat4.lookAt([0, 4, 0], [this.position[0] + x, 0, this.position[1] + y], [-1, 0, 0]);
+		this.setPosition(this.position[0]+x, this.position[1]+y);
+	} else {
+		if (y<=0) {
+			this.viewMatrix = mat4.lookAt([0, 4, 0], [this.position[0] + x, 0, this.position[1] + y], [-1, 0, 0]);
+			this.setPosition(this.position[0]+x, this.position[1]+y);
+		}
+	}
+
+	// this.setPosition(x,y);
 
 }
 
