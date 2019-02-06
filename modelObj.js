@@ -123,16 +123,36 @@ Model.prototype.move = function(x,y) {
 	// this.setPosition(x,y);
 	// this.setPosition(this.position[0]+x, this.position[1]+y);
 
-	//Barriere droite
-	if ((this.getBBox()[0][0])<1) {
-		this.viewMatrix = mat4.lookAt([this.inclinaison[0],4,this.inclinaison[1]], [this.position[0] + x, 0, this.position[1] + y], [-1, 0, 0]);
-		this.setPosition(this.position[0]+x, this.position[1]+y);
-		this.setInclinaison(this.inclinaison[0]+x*1.5, this.inclinaison[1]+y*1.5);
-	} else {
-		if (y<=0) {
-			this.viewMatrix = mat4.lookAt([this.inclinaison[0],4,this.inclinaison[1]], [this.position[0] + x, 0, this.position[1] + y], [-1, 0, 0]);
-			this.setPosition(this.position[0]+x, this.position[1]+y);
-			this.setInclinaison(this.inclinaison[0]+x*1.5, this.inclinaison[1]+y*1.5);
+	//Deplacement a droite
+	if (y>0) {
+		if ((this.getBBox()[0][0])<1) {
+			this.viewMatrix = mat4.lookAt([this.inclinaison[0], 4, this.inclinaison[1]], [this.position[0] + x, 0, this.position[1] + y], [-1, 0, 0]);
+			this.setPosition(this.position[0] + x, this.position[1] + y);
+			this.setInclinaison(this.inclinaison[0] + x * 1.5, this.inclinaison[1] + y * 1.5);
+		}
+	}
+	//Deplacement a gauche
+	else if (y<0) {
+		if ((this.getBBox()[1][0]) > -1) {
+			this.viewMatrix = mat4.lookAt([this.inclinaison[0], 4, this.inclinaison[1]], [this.position[0] + x, 0, this.position[1] + y], [-1, 0, 0]);
+			this.setPosition(this.position[0] + x, this.position[1] + y);
+			this.setInclinaison(this.inclinaison[0] + x * 1.5, this.inclinaison[1] + y * 1.5);
+		}
+	}
+	//Deplacement en haut
+	else if (x>0) {
+		if ((this.getBBox()[0][1]) < 1) {
+			this.viewMatrix = mat4.lookAt([this.inclinaison[0], 4, this.inclinaison[1]], [this.position[0] + x, 0, this.position[1] + y], [-1, 0, 0]);
+			this.setPosition(this.position[0] + x, this.position[1] + y);
+			this.setInclinaison(this.inclinaison[0] + x * 1.5, this.inclinaison[1] + y * 1.5);
+		}
+	}
+	//Deplacement en bas
+	else {
+		if ((this.getBBox()[1][1]) > -1) {
+			this.viewMatrix = mat4.lookAt([this.inclinaison[0], 4, this.inclinaison[1]], [this.position[0] + x, 0, this.position[1] + y], [-1, 0, 0]);
+			this.setPosition(this.position[0] + x, this.position[1] + y);
+			this.setInclinaison(this.inclinaison[0] + x * 1.5, this.inclinaison[1] + y * 1.5);
 		}
 	}
 
