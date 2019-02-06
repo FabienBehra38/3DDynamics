@@ -116,9 +116,19 @@ Model.prototype.setParameters = function(elapsed) {
 Model.prototype.move = function(x,y) {
     // faire bouger votre vaisseau ici
     // --> modifier currentTransform pour ca
-	this.viewMatrix = mat4.lookAt([0,4,0], [this.position[0]+x,0,this.position[1]+y], [-1,0,0]);
+
+	//Barriere droite
+	if ((this.getBBox()[0][0])<1) {
+		this.viewMatrix = mat4.lookAt([0, 4, 0], [this.position[0] + x, 0, this.position[1] + y], [-1, 0, 0]);
+		this.setPosition(this.position[0]+x, this.position[1]+y);
+	} else {
+		if (y<=0) {
+			this.viewMatrix = mat4.lookAt([0, 4, 0], [this.position[0] + x, 0, this.position[1] + y], [-1, 0, 0]);
+			this.setPosition(this.position[0]+x, this.position[1]+y);
+		}
+	}
+
 	// this.setPosition(x,y);
-	this.setPosition(this.position[0]+x, this.position[1]+y);
 
 }
 
