@@ -119,19 +119,20 @@ Model.prototype.move = function(x,y) {
 	console.log("x : "+x + "; y : "+y);
     // faire bouger votre vaisseau ici
     // --> modifier currentTransform pour ca
-	this.viewMatrix = mat4.lookAt([this.inclinaison[0],4,this.inclinaison[1]], [this.position[0]+x,0,this.position[1]+y], [-1,0,0]);
+	// this.viewMatrix = mat4.lookAt([this.inclinaison[0],4,this.inclinaison[1]], [this.position[0]+x,0,this.position[1]+y], [-1,0,0]);
 	// this.setPosition(x,y);
-	this.setPosition(this.position[0]+x, this.position[1]+y);
-	this.setInclinaison(this.inclinaison[0]+x*1.5, this.inclinaison[1]+y*1.5);
+	// this.setPosition(this.position[0]+x, this.position[1]+y);
 
 	//Barriere droite
 	if ((this.getBBox()[0][0])<1) {
-		this.viewMatrix = mat4.lookAt([0, 4, 0], [this.position[0] + x, 0, this.position[1] + y], [-1, 0, 0]);
+		this.viewMatrix = mat4.lookAt([this.inclinaison[0],4,this.inclinaison[1]], [this.position[0] + x, 0, this.position[1] + y], [-1, 0, 0]);
 		this.setPosition(this.position[0]+x, this.position[1]+y);
+		this.setInclinaison(this.inclinaison[0]+x*1.5, this.inclinaison[1]+y*1.5);
 	} else {
 		if (y<=0) {
-			this.viewMatrix = mat4.lookAt([0, 4, 0], [this.position[0] + x, 0, this.position[1] + y], [-1, 0, 0]);
+			this.viewMatrix = mat4.lookAt([this.inclinaison[0],4,this.inclinaison[1]], [this.position[0] + x, 0, this.position[1] + y], [-1, 0, 0]);
 			this.setPosition(this.position[0]+x, this.position[1]+y);
+			this.setInclinaison(this.inclinaison[0]+x*1.5, this.inclinaison[1]+y*1.5);
 		}
 	}
 
