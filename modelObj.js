@@ -11,7 +11,6 @@ function initModelShader() {
     modelShader.viewMatrixUniform = gl.getUniformLocation(modelShader, "uViewMatrix");
     modelShader.projMatrixUniform = gl.getUniformLocation(modelShader, "uProjMatrix");
 
-    console.log("model shader initialized");
 }
 
 function Model(filename) {
@@ -58,11 +57,10 @@ Model.prototype.handleLoadedObject = function(objData) {
     var vertices = objData[0];
     var normals = objData[1];
 
-    console.log("Nb vertices: " + vertices.length/3);
 
     this.computeBoundingBox(vertices);
-    console.log("BBox min: "+this.bbmin[0]+","+this.bbmin[1]+","+this.bbmin[2]);
-    console.log("BBox max: "+this.bbmax[0]+","+this.bbmax[1]+","+this.bbmax[2]);
+    // console.log("BBox min: "+this.bbmin[0]+","+this.bbmin[1]+","+this.bbmin[2]);
+    // console.log("BBox max: "+this.bbmax[0]+","+this.bbmax[1]+","+this.bbmax[2]);
 
     this.initParameters();
 
@@ -116,7 +114,7 @@ Model.prototype.setParameters = function(elapsed) {
 }
 
 Model.prototype.move = function(x,y) {
-	console.log("x : "+x + "; y : "+y);
+	// console.log("x : "+x + "; y : "+y);
     // faire bouger votre vaisseau ici
     // --> modifier currentTransform pour ca
 	// this.viewMatrix = mat4.lookAt([this.inclinaison[0],4,this.inclinaison[1]], [this.position[0]+x,0,this.position[1]+y], [-1,0,0]);

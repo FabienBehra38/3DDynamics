@@ -245,14 +245,17 @@
             // activation de la transparence
             gl.enable(gl.BLEND);
             gl.useProgram(shootSample.shader());
-            shootSample.sendUniformVariables();
-            shootSample.draw();
+            $.each(splatsArray, function(k,v){
+                v.sendUniformVariables();
+                v.draw();
+            });
             // on desactive la transparence
             gl.disable(gl.BLEND);
         }
 
         // une bonne maniere de gerer les evenements claviers
         var currentlyPressedKeys = {};
+        var splatsArray = [];
 
         function handleKeyDown(event) {
             currentlyPressedKeys[event.keyCode] = true;
@@ -312,8 +315,11 @@
 
             if (currentlyPressedKeys[32]) { // SPACE
                 // just to test how a aplat works
+                var newSplat = new Splat(0);
+                splatsArray.push(newSplat);
                 var frontShip = spaceship.getBBox();
-                shootSample.setPosition((frontShip[0][0] + frontShip[1][0]) / 2, frontShip[0][1]);
+                newSplat.setPosition((frontShip[0][0] + frontShip[1][0]) / 2, frontShip[0][1]);
+
             }
 
         }
@@ -337,7 +343,10 @@
                 heightfield.setParameters(elapsed);
                 spaceship.setParameters(elapsed);
                 background.setParameters(elapsed);
-                shootSample.setParameters(elapsed);
+                $.each(splatsArray,function (k,v) {
+                    v.setParameters(elapsed);
+                });
+
 
             }
             lastTime = timeNow;
@@ -367,6 +376,7 @@
             background = new Background(fbo.texture(0));
             spaceship = new Model('models/plane.obj');
             shootSample = new Splat(0);
+
 
             // la couleur de fond sera noire
             gl.clearColor(0.0, 0.0, 0.0, 1.0);

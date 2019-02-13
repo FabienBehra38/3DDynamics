@@ -92,6 +92,10 @@ Splat.prototype.setPosition = function(x,y) {
 Splat.prototype.setParameters = function(elapsed) {
     // we could animate something here
     this.position[1] += 0.1;
+    if(this.position[1] > 1){
+        splatsArray.splice($.inArray(this, splatsArray),1);
+        this.clear();
+    }
 }
 
 Splat.prototype.sendUniformVariables = function() {

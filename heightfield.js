@@ -12,7 +12,6 @@ function initHeightfieldShader() {
     heightfieldShader.frequencyUniform = gl.getUniformLocation(heightfieldShader, "uFrequency");
     heightfieldShader.persistenceUniform = gl.getUniformLocation(heightfieldShader, "uPersistence");
 
-    console.log("heightfield shader initialized");
 }
 
 function Heightfield() {
@@ -65,7 +64,6 @@ function Heightfield() {
 
     gl.bindVertexArray(null);
 
-    console.log("heightfield initialized");
 }
 
 Heightfield.prototype.initParameters = function() {
