@@ -13,19 +13,21 @@ function initSplatShader() {
     console.log("splat shader initialized");
 }
 
-function Splat(splatTexture) {
+function Splat(splatTexture, deep) {
     this.splatTexture = splatTexture;
     this.initParameters();
     
     var wo2 = 0.5*this.width;
     var ho2 = 0.5*this.height;
 
+    deep = deep-0.9;
+    console.log(deep);
     // un tableau contenant les positions des sommets (sur CPU donc)
     var vertices = [
-	-wo2,-ho2, -0.8,
-	wo2,-ho2, -0.8,
-	wo2, ho2, -0.8,
-	-wo2, ho2, -0.8
+	-wo2,-ho2, 0.9999,
+	wo2,-ho2, 0.99999,
+	wo2, ho2, 0.9999,
+	-wo2, ho2, 0.9999
     ];
     
     var coords = [
@@ -77,9 +79,9 @@ Splat.prototype.shader = function() {
 }
 
 Splat.prototype.initParameters = function() {
-    this.width = 0.2;
-    this.height = 0.2;
-    this.position = [0.0,-0.7];
+    this.width = 0.1;
+    this.height = 0.1;
+    this.position = [0.0 ,-0.7];
    
     //this.tex = initTexture("spaceship.png");
     // we could init some params here 
@@ -108,7 +110,7 @@ Splat.prototype.sendUniformVariables = function() {
 Splat.prototype.draw = function() {
     if(this.loaded) {
 	gl.bindVertexArray(this.vao);
-	gl.drawElements(gl.TRIANGLES, this.triangles.numItems, gl.UNSIGNED_SHORT, 0);
+	gl.drawElements(gl.TRIANGLES, this.triangles.numItems, gl.UNSIGNED_SHORT, 0.5   );
 	gl.bindVertexArray(null);
     }
 }
