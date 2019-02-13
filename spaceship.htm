@@ -379,7 +379,7 @@
             heightfield = new Heightfield();
             background = new Background(fbo.texture(0));
             spaceship = new Model('models/plane.obj');
-            shootSample = new Splat(0);
+            shootSample = new Splat(0,spaceship.getZ());
 
             // la couleur de fond sera noire
             gl.clearColor(0.0, 0.0, 0.0, 1.0);
