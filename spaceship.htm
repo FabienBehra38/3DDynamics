@@ -282,8 +282,9 @@
           }
 
 	  if (currentlyPressedKeys[32]) { // SPACE
-	      // just to test how a aplat works 
-	      shootSample.setPosition(0,0);
+	      // just to test how a aplat works
+          var frontShip = spaceship.getBBox();
+	      shootSample.setPosition((frontShip[0][0]+frontShip[1][0])/2,frontShip[0][1]);
           }
 	  
       }
@@ -301,7 +302,7 @@
           var timeNow = new Date().getTime();
           if (lastTime != 0) {
               // anime chacun des objets de la scene
-	      // si necessaire (en fonction du temps ecoulï¿½)
+	      // si necessaire (en fonction du temps ecoulé)
               var elapsed = timeNow - lastTime;
               heightfield.setParameters(elapsed);
               spaceship.setParameters(elapsed);
