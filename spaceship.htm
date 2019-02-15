@@ -53,12 +53,12 @@
 	  // pris sur shadertoy
 	  vec2 i = floor(p);
 	  vec2 f = fract(p);
-	  
+
 	  vec2 u = f*f*(3.0-2.0*f);
 
-	  return mix( mix( hash( i + vec2(0.0,0.0) ), 
+	  return mix( mix( hash( i + vec2(0.0,0.0) ),
 			   hash( i + vec2(1.0,0.0) ), u.x),
-                      mix( hash( i + vec2(0.0,1.0) ), 
+                      mix( hash( i + vec2(0.0,1.0) ),
 			   hash( i + vec2(1.0,1.0) ), u.x), u.y);
       }
 
@@ -88,9 +88,9 @@
     </script>
 
     <script id="background-vs" type="x-shader/x-vertex">#version 300 es
-      // *** le vertex shader *** 
-      layout(location=0) in vec3 aVertexPosition; // la position du sommet 
-      layout(location=1) in vec2 aVertexCoord; // sa coordonnee de texture 
+      // *** le vertex shader ***
+      layout(location=0) in vec3 aVertexPosition; // la position du sommet
+      layout(location=1) in vec2 aVertexCoord; // sa coordonnee de texture
 
       out vec2 vTextureCoord; // on souhaite rasteriser la coordonnee
 
@@ -124,7 +124,7 @@
 	  float gx = 0.5*(xp-xm)*scale;
 	  float gy = 0.5*(yp-ym)*scale;
 
-	  vec3 v1 = normalize(vec3(1.0,0.0,gx));  
+	  vec3 v1 = normalize(vec3(1.0,0.0,gx));
 	  vec3 v2 = normalize(vec3(0.0,1.0,gy));
 
 	  return cross(v1,v2);
@@ -132,23 +132,44 @@
 
       void main(void) {
 	  float d = texture(uHeightfield,vTextureCoord).x;
-	  vec3 n = computeNormal();
-	  
-	  outColor = vec4(n,1.0);
+        d = max(d,0.);
+        vec3 n = computeNormal();
+	       vec3 l = normalize(vec3(1.,1.,1.));
+	       vec3 r = reflect(l,n);
+	       vec3 v = vec3(0.,0.,-1);
+        vec3 color;
+        if(d < .1) {
+            color = normalize(vec3(1, 49, 180));
+        } else if(d < .5) {
+            color = normalize(vec3(34, 100, 15));
+        } else {
+            color = normalize(vec3(153, 81, 43));
+        }
+            color.x *= d;
+            color.y *= d;
+        vec3 ks = vec3(0.,0.,0.);
+        float q = 20.;
+        float diff = max(dot(l,n), 0.);
+        float spec = pow(max(dot(r, v), 0.), q);
+        vec3 finalColor = color * diff + (ks*spec);
 
-      }
+
+        outColor = vec4(finalColor,1.0);
+    }
+
+
 
     </script>
 
     <script id="model-vs" type="x-shader/x-vertex">#version 300 es
-      // *** le vertex shader *** 
+      // *** le vertex shader ***
       layout(location=0) in vec3 aVertexPosition;
       layout(location=1) in vec3 aVertexNormal;
-      
+
       uniform mat4 uModelMatrix;
       uniform mat4 uViewMatrix;
       uniform mat4 uProjMatrix;
-      
+
       out vec3 vNormal;
 
       void main(void) {
@@ -162,7 +183,7 @@
     <script id="model-fs" type="x-shader/x-fragment">#version 300 es
       // *** le fragment shader ***
       precision mediump float; // precision des nombres flottant
-      
+
     in vec3 vNormal;
       out vec4 outColor;
 
@@ -189,17 +210,17 @@
     </script>
 
     <script id="splat-vs" type="x-shader/x-vertex">#version 300 es
-      // *** le vertex shader *** 
-      layout(location=0) in vec3 aVertexPosition; // la position du sommet 
-      layout(location=1) in vec2 aVertexCoord; // sa coordonnee de texture 
-      
+      // *** le vertex shader ***
+      layout(location=0) in vec3 aVertexPosition; // la position du sommet
+      layout(location=1) in vec2 aVertexCoord; // sa coordonnee de texture
+
       uniform vec2 uPosition; // position du vaisseau
       out vec2 vTextureCoord; // on souhaite rasteriser la coordonnee
-      
+
       void main(void) {
 	  // projection de la position
 	  gl_Position = vec4(aVertexPosition+vec3(uPosition,0.0), 1.0);
-	  
+
 	  // stockage de la coordonnee de texture
 	  vTextureCoord = aVertexCoord;
       }
@@ -209,10 +230,10 @@
     <script id="splat-fs" type="x-shader/x-fragment">#version 300 es
       // *** le fragment shader ***
       precision highp float; // precision des nombres flottant
-      
+
     in vec2 vTextureCoord; // recuperation de la coord rasterisee
       out vec4 outColor;
-      
+
       void main(void) {
 	  float alpha = 1.-smoothstep(0.2,0.25,distance(vec2(.5),vTextureCoord));
 	  outColor = vec4(alpha*vec3(1,0,0),alpha);
@@ -237,18 +258,17 @@
             gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
             // A DECOMMENTER POUR TRAVAILLER SUR LE FOND
-            // // creation des hauteurs dans une texture
-            // gl.bindFramebuffer(gl.FRAMEBUFFER,fbo.id());
+            // creation des hauteurs dans une texture
+             gl.bindFramebuffer(gl.FRAMEBUFFER,fbo.id());
 
-            // gl.useProgram(heightfield.shader());
-            // heightfield.sendUniformVariables();
-            // heightfield.draw();
+             gl.useProgram(heightfield.shader());
+             heightfield.sendUniformVariables();
+             heightfield.draw();
 
-            // gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-
-            // gl.useProgram(background.shader());
-            // background.sendUniformVariables();
-            // background.draw();
+             gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+             gl.useProgram(background.shader());
+             background.sendUniformVariables();
+             background.draw();
 
             gl.useProgram(spaceship.shader());
             spaceship.sendUniformVariables();
@@ -345,7 +365,7 @@
             var timeNow = new Date().getTime();
             if (lastTime != 0) {
                 // anime chacun des objets de la scene
-                // si necessaire (en fonction du temps ecoulé)
+                // si necessaire (en fonction du temps ecoulï¿½)
                 var elapsed = timeNow - lastTime;
                 heightfield.setParameters(elapsed);
                 spaceship.setParameters(elapsed);

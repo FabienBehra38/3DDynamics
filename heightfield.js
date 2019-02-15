@@ -69,6 +69,7 @@ function Heightfield() {
 }
 
 Heightfield.prototype.initParameters = function() {
+    // à tester de modifier
     this.timer = 0.0;
     this.offset = [0.0,0.0];
     this.amplitude = 2.0;
