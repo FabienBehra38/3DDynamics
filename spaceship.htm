@@ -356,9 +356,13 @@
                 heightfield.setParameters(elapsed);
                 spaceship.setParameters(elapsed);
                 background.setParameters(elapsed);
-                $.each(splatsArray,function (k,v) {
-                    v.setParameters(elapsed);
-                });
+                for (const splat in splatsArray) {
+                    if (splatsArray[splat].getPosX() < 1) {
+                        splatsArray[splat].setParameters(elapsed);
+                    } else {
+                        splatsArray.splice(splatsArray[splat],1);
+                    }
+                }
 
 
             }
