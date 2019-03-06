@@ -102,7 +102,9 @@ Model.prototype.initParameters = function() {
     this.modelMatrix = mat4.identity();
     this.viewMatrix = mat4.identity();
     this.projMatrix = mat4.identity();
-    this.setPosition(0,0);
+
+    this.position = [0,0,0];
+    this.rotation = 0.;
 
     // trouver les model/view/proj matrices pour voir l'objet comme vous le souhaitez
 	this.modelMatrix = mat4.scale(this.modelMatrix, [0.1,0.1,0.1]);
@@ -127,7 +129,7 @@ Model.prototype.move = function(x,y) {
 	if (y>0) {
 		if ((this.getBBox()[0][0])<1) {
 			this.viewMatrix = mat4.lookAt([this.inclinaison[0], this.deepLookAt, this.inclinaison[1]], [this.position[0] + x, 0, this.position[1] + y], [-1, 0, 0]);
-			this.setPosition(this.position[0] + x, this.position[1] + y);
+			this.setPosition(this.position[0] + x, this.position[1] + y,0);
 			this.setInclinaison(this.inclinaison[0] + x * 1.5, this.inclinaison[1] + y * 1.5);
 		}
 	}
@@ -135,7 +137,7 @@ Model.prototype.move = function(x,y) {
 	else if (y<0) {
 		if ((this.getBBox()[1][0]) > -1) {
 			this.viewMatrix = mat4.lookAt([this.inclinaison[0], this.deepLookAt, this.inclinaison[1]], [this.position[0] + x, 0, this.position[1] + y], [-1, 0, 0]);
-			this.setPosition(this.position[0] + x, this.position[1] + y);
+			this.setPosition(this.position[0] + x, this.position[1] + y,0);
 			this.setInclinaison(this.inclinaison[0] + x * 1.5, this.inclinaison[1] + y * 1.5);
 		}
 	}
@@ -143,7 +145,7 @@ Model.prototype.move = function(x,y) {
 	else if (x>0) {
 		if ((this.getBBox()[0][1]) < 1) {
 			this.viewMatrix = mat4.lookAt([this.inclinaison[0], this.deepLookAt, this.inclinaison[1]], [this.position[0] + x, 0, this.position[1] + y], [-1, 0, 0]);
-			this.setPosition(this.position[0] + x, this.position[1] + y);
+			this.setPosition(this.position[0] + x, this.position[1] + y,0);
 			this.setInclinaison(this.inclinaison[0] + x * 1.5, this.inclinaison[1] + y * 1.5);
 		}
 	}
@@ -151,7 +153,7 @@ Model.prototype.move = function(x,y) {
 	else {
 		if ((this.getBBox()[1][1]) > -1) {
 			this.viewMatrix = mat4.lookAt([this.inclinaison[0], this.deepLookAt, this.inclinaison[1]], [this.position[0] + x, 0, this.position[1] + y], [-1, 0, 0]);
-			this.setPosition(this.position[0] + x, this.position[1] + y);
+			this.setPosition(this.position[0] + x, this.position[1] + y,0);
 			this.setInclinaison(this.inclinaison[0] + x * 1.5, this.inclinaison[1] + y * 1.5);
 		}
 	}
@@ -160,8 +162,8 @@ Model.prototype.move = function(x,y) {
 
 }
 
-Model.prototype.setPosition = function(x,y) {
-	this.position = [x,y];
+Model.prototype.setPosition = function(x,y,z) {
+	this.position = [x,y,z];
 }
 
 Model.prototype.setInclinaison = function(x,y){
@@ -181,7 +183,15 @@ Model.prototype.getZ = function(){
 
 Model.prototype.sendUniformVariables = function() {
     if(this.loaded) {
-	var m = mat4.create();
+
+    var rMat = mat4.create();
+    var tMat = mat4.create();
+    mat4.rotate(mat4.identity(),this.rotation,[1,0,0],rMat);
+    mat4.translate(mat4.identity(),this.position,tMat);
+    mat4.multiply(tMat,rMat,this.currentTransform);
+
+    console.log(this.position);
+    var m = mat4.create();
 	var v = this.viewMatrix;
 	var p = this.projMatrix;
 	mat4.multiply(this.currentTransform,this.modelMatrix,m);
@@ -248,53 +258,55 @@ Model.prototype.load = function(filename) {
 
                 var lines = data.split("\n");
 
-		var positions = [];
-		var normals = [];
-		var arrayVertex = []
-		var arrayNormal = [];
+                var positions = [];
+                var normals = [];
+                var arrayVertex = []
+                var arrayNormal = [];
 
-		for ( var i = 0 ; i < lines.length ; i++ ) {
-		    var parts = lines[i].trimRight().split(' ');
-		    if ( parts.length > 0 ) {
-			switch(parts[0]) {
-			case 'v':  positions.push(
-			    vec3.create([
-				parseFloat(parts[1]),
-				parseFloat(parts[2]),
-				parseFloat(parts[3])]
-			    ));
-			    break;
-			case 'vn':
-			    normals.push(
-				vec3.create([
-				    parseFloat(parts[1]),
-				    parseFloat(parts[2]),
-				    parseFloat(parts[3])]
-				));
-			    break;
-			case 'f': {
-			    var f1 = parts[1].split('/');
-			    var f2 = parts[2].split('/');
-			    var f3 = parts[3].split('/');
-			    Array.prototype.push.apply(arrayVertex,positions[parseInt(f1[0])-1]);
-			    Array.prototype.push.apply(arrayVertex,positions[parseInt(f2[0])-1]);
-			    Array.prototype.push.apply(arrayVertex,positions[parseInt(f3[0])-1]);
+                for (var i = 0; i < lines.length; i++) {
+                    var parts = lines[i].trimRight().split(' ');
+                    if (parts.length > 0) {
+                        switch (parts[0]) {
+                            case 'v':
+                                positions.push(
+                                    vec3.create([
+                                        parseFloat(parts[1]),
+                                        parseFloat(parts[2]),
+                                        parseFloat(parts[3])]
+                                    ));
+                                break;
+                            case 'vn':
+                                normals.push(
+                                    vec3.create([
+                                        parseFloat(parts[1]),
+                                        parseFloat(parts[2]),
+                                        parseFloat(parts[3])]
+                                    ));
+                                break;
+                            case 'f': {
+                                var f1 = parts[1].split('/');
+                                var f2 = parts[2].split('/');
+                                var f3 = parts[3].split('/');
+                                Array.prototype.push.apply(arrayVertex, positions[parseInt(f1[0]) - 1]);
+                                Array.prototype.push.apply(arrayVertex, positions[parseInt(f2[0]) - 1]);
+                                Array.prototype.push.apply(arrayVertex, positions[parseInt(f3[0]) - 1]);
 
-			    Array.prototype.push.apply(arrayNormal,normals[parseInt(f1[2])-1]);
-			    Array.prototype.push.apply(arrayNormal,normals[parseInt(f2[2])-1]);
-			    Array.prototype.push.apply(arrayNormal,normals[parseInt(f3[2])-1]);
-			    break;
-			}
-			default: break;
-			}
-		    }
-		}
+                                Array.prototype.push.apply(arrayNormal, normals[parseInt(f1[2]) - 1]);
+                                Array.prototype.push.apply(arrayNormal, normals[parseInt(f2[2]) - 1]);
+                                Array.prototype.push.apply(arrayNormal, normals[parseInt(f3[2]) - 1]);
+                                break;
+                            }
+                            default:
+                                break;
+                        }
+                    }
+                }
 
-		var objData = [
-		    new Float32Array(arrayVertex),
-		    new Float32Array(arrayNormal)
-		]
-		instance.handleLoadedObject(objData);
+                var objData = [
+                    new Float32Array(arrayVertex),
+                    new Float32Array(arrayNormal)
+                ]
+                instance.handleLoadedObject(objData);
 
             }
         }
