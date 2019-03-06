@@ -1,4 +1,5 @@
 var splatShader;
+var model;
 
 function initSplatShader() {
     splatShader = initShaders("splat-vs","splat-fs");
@@ -13,15 +14,13 @@ function initSplatShader() {
     console.log("splat shader initialized");
 }
 
-function Splat(splatTexture, deep) {
-    this.splatTexture = splatTexture;
+function Splat(textureFileName, deep) {
     this.initParameters();
-    
+
     var wo2 = 0.5*this.width;
     var ho2 = 0.5*this.height;
 
     deep = deep-0.9;
-    console.log(deep);
     // un tableau contenant les positions des sommets (sur CPU donc)
     var vertices = [
 	-wo2,-ho2, 0.9999,
@@ -83,7 +82,7 @@ Splat.prototype.initParameters = function() {
     this.height = 0.1;
     this.position = [0.0 ,-0.7];
 
-    //this.tex = initTexture("spaceship.png");
+    this.splatTexture = initTexture("assets/splat.png");
     // we could init some params here 
 }
 
@@ -98,12 +97,12 @@ Splat.prototype.setParameters = function(elapsed) {
 
 Splat.prototype.sendUniformVariables = function() {
     if(this.loaded) {
-	gl.uniform2fv(splatShader.positionUniform,this.position);
+        gl.uniform2fv(splatShader.positionUniform,this.position);
 
-	// // how to send a texture: 
-	// gl.activeTexture(gl.TEXTURE0);
-	// gl.bindTexture(gl.TEXTURE_2D,this.splatTexture);
-	// gl.uniform1i(splatShader.texUniform, 0);
+        // how to send a texture:
+        gl.activeTexture(gl.TEXTURE0);
+        gl.bindTexture(gl.TEXTURE_2D,this.splatTexture);
+        gl.uniform1i(splatShader.texUniform, 0);
     }
 }
 

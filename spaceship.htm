@@ -212,10 +212,12 @@
       
     in vec2 vTextureCoord; // recuperation de la coord rasterisee
       out vec4 outColor;
+      uniform sampler2D uTex; //ressource de la texture
       
       void main(void) {
 	  float alpha = 1.-smoothstep(0.2,0.25,distance(vec2(.5),vTextureCoord));
-	  outColor = vec4(alpha*vec3(1,0,0),alpha);
+	  //outColor = vec4(alpha*vec3(1,0,0),alpha);
+	  outColor = texture(uTex, vTextureCoord);
       }
 
     </script>
@@ -396,7 +398,7 @@
             heightfield = new Heightfield();
             background = new Background(fbo.texture(0));
             spaceship = new Model('models/plane.obj');
-            shootSample = new Splat(0,spaceship.getZ());
+            shootSample = new Splat(null,spaceship.getZ());
 
 
             // la couleur de fond sera noire
