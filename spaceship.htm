@@ -327,11 +327,15 @@
             }
 
             if (currentlyPressedKeys[32]) { // SPACE
-                // just to test how a aplat works
-                var newSplat = new Splat(0);
-                splatsArray.push(newSplat);
-                var frontShip = spaceship.getBBox();
-                newSplat.setPosition((frontShip[0][0] + frontShip[1][0]) / 2, frontShip[0][1]);
+                // if (splatsArray[splatsArray.length-1]==null || splatsArray[splatsArray.length-1].getPosX() > 0.5) {
+                if (splatsArray[splatsArray.length-1]==null || splatsArray[splatsArray.length-1].getPosX() > splatsArray[splatsArray.length-1].getPosDebut()+1.5 ) {
+                    // just to test how a aplat works
+                    var newSplat = new Splat(0);
+                    splatsArray.push(newSplat);
+                    var frontShip = spaceship.getBBox();
+                    newSplat.setPosition((frontShip[0][0] + frontShip[1][0]) / 2, frontShip[0][1]);
+                     newSplat.setPosDebut(frontShip[0][1]);
+                }
 
             }
 
@@ -357,7 +361,7 @@
                 spaceship.setParameters(elapsed);
                 background.setParameters(elapsed);
                 for (const splat in splatsArray) {
-                    if (splatsArray[splat].getPosX() < 1) {
+                    if (splatsArray[splat].getPosX() < 10) {
                         splatsArray[splat].setParameters(elapsed);
                     } else {
                         splatsArray.splice(splatsArray[splat],1);

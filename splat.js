@@ -82,7 +82,7 @@ Splat.prototype.initParameters = function() {
     this.width = 0.1;
     this.height = 0.1;
     this.position = [0.0 ,-0.7];
-   
+
     //this.tex = initTexture("spaceship.png");
     // we could init some params here 
 }
@@ -93,7 +93,7 @@ Splat.prototype.setPosition = function(x,y) {
 
 Splat.prototype.setParameters = function(elapsed) {
     // we could animate something here
-    this.position[1] += 0.1;
+    this.position[1] += 0.04;
 }
 
 Splat.prototype.sendUniformVariables = function() {
@@ -126,4 +126,11 @@ Splat.prototype.clear = function() {
 
 Splat.prototype.getPosX = function () {
     return this.position[1];
+};
+
+Splat.prototype.setPosDebut = function (pos) {
+    this.posDebut = pos
+};
+Splat.prototype.getPosDebut = function () {
+    return this.posDebut;
 };
