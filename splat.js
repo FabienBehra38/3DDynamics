@@ -24,10 +24,10 @@ function Splat(splatTexture, deep) {
     console.log(deep);
     // un tableau contenant les positions des sommets (sur CPU donc)
     var vertices = [
-	-wo2,-ho2, 0.9999,
-	wo2,-ho2, 0.99999,
-	wo2, ho2, 0.9999,
-	-wo2, ho2, 0.9999
+	-wo2,-ho2, 0.8,
+	wo2,-ho2, 0.8,
+	wo2, ho2, 0.8,
+	-wo2, ho2, 0.8
     ];
     
     var coords = [
