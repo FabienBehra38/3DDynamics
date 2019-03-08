@@ -438,7 +438,7 @@
                 spaceship.setParameters(elapsed);
                 background.setParameters(elapsed);
                 for (const splat in splatsArray) {
-                    if (splatsArray[splat].getPosX() < 10) {
+                    if (splatsArray[splat].getPosX() < 10 && !splatsArray[splat].collision(ennemy.getBBox())) {
                         splatsArray[splat].setParameters(elapsed);
                     } else {
                         splatsArray.splice(splatsArray[splat],1);
