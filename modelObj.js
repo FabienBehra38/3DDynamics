@@ -98,7 +98,7 @@ Model.prototype.handleLoadedObject = function (objData) {
 
 
 Model.prototype.initParameters = function () {
-    // this.setPosition(0, 0);
+    this.setPosition(0, 0);
     this.setInclinaison(0, 0);
     this.currentTransform = mat4.identity();
     this.modelMatrix = mat4.identity();
@@ -130,54 +130,44 @@ Model.prototype.setParameters = function (elapsed) {
     // on pourrait animer des choses ici
 }
 
-
 Model.prototype.move = function (x, y) {
-    // console.log("x : "+x + "; y : "+y);
-    // faire bouger votre vaisseau ici
-    // --> modifier currentTransform pour ca
-    // this.viewMatrix = mat4.lookAt([this.inclinaison[0],4,this.inclinaison[1]], [this.position[0]+x,0,this.position[1]+y], [-1,0,0]);
-    // this.setPosition(x,y);
-    // this.setPosition(this.position[0]+x, this.position[1]+y);
 
     //Deplacement a droite
-    /*
-	if (y>0) {
-		if ((this.getBBox()[0][0])<1) {
-			//this.viewMatrix = mat4.lookAt([this.inclinaison[0], this.deepLookAt, this.inclinaison[1]], [this.position[0] + x, 0, this.position[1] + y], [-1, 0, 0]);
-            this.setPosition(this.position[0] - x, 0,0);
-			//this.setInclinaison(this.inclinaison[0] + x * 1.5, this.inclinaison[1] + y * 1.5);
-		}
-	}
-	//Deplacement a gauche
-	else if (y<0) {
-		if ((this.getBBox()[1][0]) > -1) {
-			//this.viewMatrix = mat4.lookAt([this.inclinaison[0], this.deepLookAt, this.inclinaison[1]], [this.position[0] + x, 0, this.position[1] + y], [-1, 0, 0]);
-            this.setPosition(this.position[0] - x, 0,0);
-			//this.setInclinaison(this.inclinaison[0] + x * 1.5, this.inclinaison[1] + y * 1.5);
-		}
-	}
-	//Deplacement en haut
-	else if (x>0) {
-		if ((this.getBBox()[0][1]) < 1) {
-			//this.viewMatrix = mat4.lookAt([this.inclinaison[0], this.deepLookAt, this.inclinaison[1]], [this.position[0] + x, 0, this.position[1] + y], [-1, 0, 0]);
-            this.setPosition(0, this.position[1] - y,0);
-			//this.setInclinaison(this.inclinaison[0] + x * 1.5, this.inclinaison[1] + y * 1.5);
-		}
-	}
-	//Deplacement en bas
-	else {
-		if ((this.getBBox()[1][1]) > -1) {
-			//this.viewMatrix = mat4.lookAt([this.inclinaison[0], this.deepLookAt, this.inclinaison[1]], [this.position[0] + x, 0, this.position[1] + y], [-1, 0, 0]);
 
-            this.setPosition(0, this.position[1] - y,0);
-			//this.setInclinaison(this.inclinaison[0] + x * 1.5, this.inclinaison[1] + y * 1.5);
-		}
-	}*/
-    this.setPosition(this.position[0] - x, 0, this.position[2] - y);
-    // this.setPosition(x,y);
+    if (y > 0) {
+        if ((this.getBBox()[0][0]) < 1) {
+            // this.translate(this.translation[0],0,this.translation[2]-y);
+            this.setPosition(this.position[0] + x, 0, this.position[2] - y);
+        }
+    }
+    //Deplacement a gauche
+    else if (y < 0) {
+        if ((this.getBBox()[1][0]) > -1) {
+            // this.translate(this.translation[0],0,this.translation[2]-y);
+            this.setPosition(this.position[0] + x, 0, this.position[2] - y);
+        }
+    }
+    //Deplacement en haut
+    else if (x > 0) {
+        if ((this.getBBox()[0][1]) < 1) {
+            // this.translate(this.translation[0]-x,0, this.translation[2]);
+            this.setPosition(this.position[0] - x, this.position[2] + y, 0);
+        }
+    }
+    //Deplacement en bas
+    else {
+        if ((this.getBBox()[1][1]) > -1) {
+            // this.translate(this.translation[0]-x,0, this.translation[2]);
+            this.setPosition(this.position[0] - x, this.position[2] + y, 0);
+        }
+    }
+    //this.translate(this.translation[0]-x,0,this.translation[2]-y);
 
 }
 
+Model.prototype.translate = function (x, y, z) {
+    this.translation = [x, y, z];
+}
 Model.prototype.setPosition = function (x, y, z) {
     this.position = [x, y, z];
 }
