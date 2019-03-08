@@ -136,7 +136,7 @@ Model.prototype.move = function (x, y) {
     }
     //Deplacement en haut
     else if (x > 0) {
-        if ((this.getBBox()[0][1]) < 0.95) {
+        if ((this.getBBox()[0][1]) < 0) {
             this.translate(this.translation[0] - x, 0, this.translation[2]);
         }
     }
