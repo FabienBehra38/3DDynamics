@@ -279,6 +279,7 @@
 
             gl.useProgram(ennemy.shader());
             ennemy.sendUniformVariables();
+            // ennemy.setScale();
             ennemy.draw();
 
             // test pour afficher un splat quand on appuie sur espace
@@ -454,8 +455,9 @@
 
             heightfield = new Heightfield();
             background = new Background(fbo.texture(0));
-            spaceship = new Model('models/plane.obj');
-            ennemy = new Ennemy('models/pika.obj');
+            spaceship = new Model('models/plane.obj', false);
+            ennemy = new Model('models/pika.obj', true);
+            // ennemy.setScale();
             shootSample = new Splat(0,spaceship.getZ());
 
 
