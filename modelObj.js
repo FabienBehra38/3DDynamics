@@ -134,34 +134,33 @@ Model.prototype.move = function (x, y) {
 
     //Deplacement a droite
 
+    //Deplacement a droite
+
     if (y > 0) {
-        if ((this.getBBox()[0][0]) < 1) {
-            // this.translate(this.translation[0],0,this.translation[2]-y);
-            this.setPosition(this.position[0] + x, 0, this.position[2] - y);
+        if ((this.getBBox()[0][0]) < 0.89) {
+            this.translate(this.translation[0], 0, this.translation[2] - y);
         }
+        this.rotate(-0.2);
     }
     //Deplacement a gauche
     else if (y < 0) {
         if ((this.getBBox()[1][0]) > -1) {
-            // this.translate(this.translation[0],0,this.translation[2]-y);
-            this.setPosition(this.position[0] + x, 0, this.position[2] - y);
+            this.translate(this.translation[0], 0, this.translation[2] - y);
         }
+        this.rotate(0.1);
     }
     //Deplacement en haut
     else if (x > 0) {
-        if ((this.getBBox()[0][1]) < 1) {
-            // this.translate(this.translation[0]-x,0, this.translation[2]);
-            this.setPosition(this.position[0] - x, this.position[2] + y, 0);
+        if ((this.getBBox()[0][1]) < 0.95) {
+            this.translate(this.translation[0] - x, 0, this.translation[2]);
         }
     }
     //Deplacement en bas
     else {
         if ((this.getBBox()[1][1]) > -1) {
-            // this.translate(this.translation[0]-x,0, this.translation[2]);
-            this.setPosition(this.position[0] - x, this.position[2] + y, 0);
+            this.translate(this.translation[0] - x, 0, this.translation[2]);
         }
     }
-    //this.translate(this.translation[0]-x,0,this.translation[2]-y);
 
 }
 
@@ -175,6 +174,13 @@ Model.prototype.setPosition = function (x, y, z) {
 Model.prototype.setInclinaison = function (x, y) {
     this.inclinaison = [x, y];
 }
+Model.prototype.resetRotation = function () {
+    if (this.rotation < 0) {
+        this.rotate(0.01);
+    } else if (this.rotation > 0) {
+        this.rotate(-0.01);
+    }
+}
 
 Model.prototype.getBBox = function () {
     return [this.bbminP, this.bbmaxP];
@@ -186,6 +192,11 @@ Model.prototype.getZ = function () {
     return [this.bbminP[2]];
 }
 
+Model.prototype.getZ = function () {
+    console.log("bbmin :" + this.bbminP);
+    console.log("bbmax :" + this.bbmaxP);
+    return [this.bbminP[2]];
+}
 
 Model.prototype.sendUniformVariables = function () {
     if (this.loaded) {
