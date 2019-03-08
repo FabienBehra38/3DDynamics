@@ -192,7 +192,6 @@ Model.prototype.sendUniformVariables = function() {
     mat4.translate(mat4.identity(),this.position,tMat);
     mat4.multiply(tMat,rMat,this.currentTransform);
 
-    console.log(this.position);
     var m = mat4.create();
 	var v = this.viewMatrix;
 	var p = this.projMatrix;

@@ -112,7 +112,11 @@ Splat.prototype.draw = function() {
 	gl.drawElements(gl.TRIANGLES, this.triangles.numItems, gl.UNSIGNED_SHORT, 0.5   );
 	gl.bindVertexArray(null);
     }
-}
+};
+
+Splat.prototype.collision = function(pos){
+  return this.position[0]>pos[0][0] && this.position[0]<pos[1][0] &&  this.position[1]>pos[1][1]&& this.position[1]<pos[0][1];
+};
 
 
 Splat.prototype.clear = function() {
@@ -125,6 +129,10 @@ Splat.prototype.clear = function() {
 
 Splat.prototype.getPosX = function () {
     return this.position[1];
+};
+
+Splat.prototype.getPos = function () {
+    return this.position;
 };
 
 Splat.prototype.setPosDebut = function (pos) {

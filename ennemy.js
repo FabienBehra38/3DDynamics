@@ -117,7 +117,6 @@ Ennemy.prototype.setParameters = function (elapsed) {
 Ennemy.prototype.move = function (y, x) {
     x = -x;
     //Deplacement en haut
-    console.log(this.getBBox()[1])
     if (y>0) {
         if ((this.getBBox()[0][1]) < 1) {
             this.viewMatrix = mat4.lookAt([0, this.deepLookAt, 0], [this.position[0] + x, 0, this.position[1] + y], [0, 0, -1]);
@@ -166,6 +165,9 @@ Ennemy.prototype.move = function (y, x) {
 Ennemy.prototype.setPosition = function (x, y) {
     this.position = [x, y];
 }
+Ennemy.prototype.getPos = function () {
+    return this.position;
+};
 
 Ennemy.prototype.setInclinaison = function (x, y) {
     this.inclinaison = [x, y];
