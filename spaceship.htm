@@ -250,6 +250,7 @@
         var spaceship;
         var ennemy;
         var shootSample;
+        var specialShoot = [];
         const speed = 0.15;
         var prece,preceEnnemy;
 
@@ -286,6 +287,10 @@
             gl.enable(gl.BLEND);
             gl.useProgram(shootSample.shader());
             $.each(splatsArray, function(k,v){
+                v.sendUniformVariables();
+                v.draw();
+            });
+            $.each(specialShoot, function(k,v){
                 v.sendUniformVariables();
                 v.draw();
             });
@@ -387,7 +392,7 @@
 
             if (currentlyPressedKeys[32]) { // SPACE
                 // if (splatsArray[splatsArray.length-1]==null || splatsArray[splatsArray.length-1].getPosX() > 0.5) {
-                if (splatsArray[splatsArray.length-1]==null || splatsArray[splatsArray.length-1].getPosX() > splatsArray[splatsArray.length-1].getPosDebut()+1.5 ) {
+                if (splatsArray[splatsArray.length-1]==null || splatsArray[splatsArray.length-1].getPosX() > splatsArray[splatsArray.length-1].getPosDebut()+0.8 ) {
                     // just to test how a aplat works
                     var newSplat = new Splat(0);
                     splatsArray.push(newSplat);
@@ -398,6 +403,19 @@
 
             }
 
+            if (currentlyPressedKeys[50]) { // é
+                if (specialShoot[specialShoot.length-1]==null || specialShoot[specialShoot.length-1].getPosX() > specialShoot[specialShoot.length-1].getPosDebut()+10 ) {
+                    // just to test how a aplat works
+                    specialShoot.push(new Splat(0));
+                    specialShoot.push(new Splat(0));
+                    specialShoot.push(new Splat(0));
+                    const frontShip = spaceship.getBBox();
+                    for(let i = 0 ; i < specialShoot.length; i++) {
+                        specialShoot[i].setPosition((frontShip[0][0] + frontShip[1][0]) / 2, frontShip[0][1]);
+                        specialShoot[i].setPosDebut(frontShip[0][1]);
+                    }
+                }
+            }
         }
 
         function mouseMove(event) {
@@ -426,8 +444,19 @@
                         splatsArray.splice(splatsArray[splat],1);
                     }
                 }
-
-
+                for (let i =0 ; i< specialShoot.length ; i++){
+                    if (specialShoot[i].getPosX() < 5) {
+                        if( i === 0){
+                            specialShoot[i].setSpecialParametersLeft(elapsed);
+                        }else if (i === 2){
+                            specialShoot[i].setSpecialParametersRight(elapsed)
+                        }else{
+                            specialShoot[i].setParameters(elapsed);
+                        }
+                    } else {
+                        specialShoot.splice(specialShoot[i],1);
+                    }
+                }
             }
             lastTime = timeNow;
         }
@@ -455,14 +484,12 @@
             heightfield = new Heightfield();
             background = new Background(fbo.texture(0));
             spaceship = new Model('models/plane.obj');
-<<<<<<< HEAD
-            shootSample = new Splat(null,spaceship.getZ());
-            specialShoot = new Splat(null, spaceship.getZ(), true);
-=======
             ennemy = new Ennemy('models/pika.obj');
-            shootSample = new Splat(0,spaceship.getZ());
->>>>>>> d3ec00fcef48f8364517623f6a1efcd876b5af1d
+            shootSample = new Splat(null,spaceship.getZ());
 
+            // for(let i =0; i<specialShoot.length; i++){
+            //     specialShoot.push(new Splat(null, spaceship.getZ()));
+            // }
 
             // la couleur de fond sera noire
             gl.clearColor(0.0, 0.0, 0.0, 1.0);

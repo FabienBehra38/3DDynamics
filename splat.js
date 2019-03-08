@@ -14,7 +14,7 @@ function initSplatShader() {
     console.log("splat shader initialized");
 }
 
-function Splat(textureFileName, deep, special = false) {
+function Splat(textureFileName, deep) {
     this.initParameters();
 
     var wo2 = 0.5*this.width;
@@ -93,6 +93,18 @@ Splat.prototype.setPosition = function(x,y) {
 Splat.prototype.setParameters = function(elapsed) {
     // we could animate something here
     this.position[1] += 0.04;
+}
+
+Splat.prototype.setSpecialParametersRight= function(elapsed) {
+    // we could animate something here
+    this.position[1] += 0.04;
+    this.position[0] += 0.01;
+}
+
+Splat.prototype.setSpecialParametersLeft= function(elapsed) {
+    // we could animate something here
+    this.position[1] += 0.04;
+    this.position[0] -= 0.01;
 }
 
 Splat.prototype.sendUniformVariables = function() {
