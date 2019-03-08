@@ -96,14 +96,13 @@ Model.prototype.handleLoadedObject = function(objData) {
 
 
 Model.prototype.initParameters = function() {
-	this.setPosition(0,0);
 	this.setInclinaison(0,0);
     this.currentTransform = mat4.identity();
     this.modelMatrix = mat4.identity();
     this.viewMatrix = mat4.identity();
     this.projMatrix = mat4.identity();
 
-    this.position = [0,0,0];
+    this.translation = [0,0,0];
     this.rotation = 0.;
 
     // trouver les model/view/proj matrices pour voir l'objet comme vous le souhaitez
@@ -118,54 +117,39 @@ Model.prototype.setParameters = function(elapsed) {
 }
 
 Model.prototype.move = function(x,y) {
-	// console.log("x : "+x + "; y : "+y);
-    // faire bouger votre vaisseau ici
-    // --> modifier currentTransform pour ca
-	// this.viewMatrix = mat4.lookAt([this.inclinaison[0],4,this.inclinaison[1]], [this.position[0]+x,0,this.position[1]+y], [-1,0,0]);
-	// this.setPosition(x,y);
-	// this.setPosition(this.position[0]+x, this.position[1]+y);
+
 
 	//Deplacement a droite
-    /*
+
 	if (y>0) {
 		if ((this.getBBox()[0][0])<1) {
-			//this.viewMatrix = mat4.lookAt([this.inclinaison[0], this.deepLookAt, this.inclinaison[1]], [this.position[0] + x, 0, this.position[1] + y], [-1, 0, 0]);
-            this.setPosition(this.position[0] - x, 0,0);
-			//this.setInclinaison(this.inclinaison[0] + x * 1.5, this.inclinaison[1] + y * 1.5);
+			this.translate(this.translation[0],0,this.translation[2]-y);
 		}
 	}
 	//Deplacement a gauche
 	else if (y<0) {
 		if ((this.getBBox()[1][0]) > -1) {
-			//this.viewMatrix = mat4.lookAt([this.inclinaison[0], this.deepLookAt, this.inclinaison[1]], [this.position[0] + x, 0, this.position[1] + y], [-1, 0, 0]);
-            this.setPosition(this.position[0] - x, 0,0);
-			//this.setInclinaison(this.inclinaison[0] + x * 1.5, this.inclinaison[1] + y * 1.5);
+			this.translate(this.translation[0],0,this.translation[2]-y);
 		}
 	}
 	//Deplacement en haut
 	else if (x>0) {
 		if ((this.getBBox()[0][1]) < 1) {
-			//this.viewMatrix = mat4.lookAt([this.inclinaison[0], this.deepLookAt, this.inclinaison[1]], [this.position[0] + x, 0, this.position[1] + y], [-1, 0, 0]);
-            this.setPosition(0, this.position[1] - y,0);
-			//this.setInclinaison(this.inclinaison[0] + x * 1.5, this.inclinaison[1] + y * 1.5);
+			this.translate(this.translation[0]-x,0, this.translation[2]);
 		}
 	}
 	//Deplacement en bas
 	else {
 		if ((this.getBBox()[1][1]) > -1) {
-			//this.viewMatrix = mat4.lookAt([this.inclinaison[0], this.deepLookAt, this.inclinaison[1]], [this.position[0] + x, 0, this.position[1] + y], [-1, 0, 0]);
-
-            this.setPosition(0, this.position[1] - y,0);
-			//this.setInclinaison(this.inclinaison[0] + x * 1.5, this.inclinaison[1] + y * 1.5);
+			this.translate(this.translation[0]-x,0, this.translation[2]);
 		}
-	}*/
-    this.setPosition(this.position[0] - x,0, this.position[2] - y);
-	// this.setPosition(x,y);
+	}
+    //this.translate(this.translation[0]-x,0,this.translation[2]-y);
 
 }
 
-Model.prototype.setPosition = function(x,y,z) {
-	this.position = [x,y,z];
+Model.prototype.translate = function(x,y,z){
+    this.translation = [x,y,z];
 }
 
 Model.prototype.setInclinaison = function(x,y){
@@ -189,10 +173,10 @@ Model.prototype.sendUniformVariables = function() {
     var rMat = mat4.create();
     var tMat = mat4.create();
     mat4.rotate(mat4.identity(),this.rotation,[1,0,0],rMat);
-    mat4.translate(mat4.identity(),this.position,tMat);
+    mat4.translate(mat4.identity(),this.translation,tMat);
     mat4.multiply(tMat,rMat,this.currentTransform);
 
-    console.log(this.position);
+    console.log(this.translation);
     var m = mat4.create();
 	var v = this.viewMatrix;
 	var p = this.projMatrix;
