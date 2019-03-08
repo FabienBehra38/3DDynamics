@@ -314,7 +314,7 @@ Model.prototype.load = function(filename) {
         }
     };
 
-    console.log("Loading Model <" + filename + ">...");
+    console.log("Loading Ennemy <" + filename + ">...");
 
     xmlhttp.open("GET", filename, true);
     xmlhttp.send();

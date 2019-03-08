@@ -9,6 +9,7 @@
     <script type="text/javascript" src="heightfield.js"></script>
     <script type="text/javascript" src="background.js"></script>
     <script type="text/javascript" src="modelObj.js"></script>
+    <script type="text/javascript" src="ennemy.js"></script>
     <script type="text/javascript" src="splat.js"></script>
     <script type="text/javascript" src="libs/jQuery.js"></script>
 
@@ -247,9 +248,10 @@
         var heightfield;
         var background;
         var spaceship;
+        var ennemy;
         var shootSample;
         const speed = 0.15;
-        var prece;
+        var prece,preceEnnemy;
 
         function drawScene() {
             // initialisation du viewport
@@ -274,6 +276,10 @@
             gl.useProgram(spaceship.shader());
             spaceship.sendUniformVariables();
             spaceship.draw();
+
+            gl.useProgram(ennemy.shader());
+            ennemy.sendUniformVariables();
+            ennemy.draw();
 
             // test pour afficher un splat quand on appuie sur espace
             // activation de la transparence
@@ -308,7 +314,39 @@
             // vous pouvez utiliser ce genre de fonction
             // pour faire bouger votre vaisseau
 
+            if (currentlyPressedKeys[39] && (preceEnnemy === "S" || preceEnnemy === "Z")) { // D
+                ennemy.move(0, speed*0.707);
+                preceEnnemy = "D";
+            }else if(currentlyPressedKeys[39]){
+                ennemy.move(0, speed);
+                preceEnnemy = "D";
+            }
 
+            if (currentlyPressedKeys[37] && (preceEnnemy === "S" || preceEnnemy === "Z")) { // Q
+                ennemy.move(0, -speed*0.707);
+                preceEnnemy = "Q";
+            }else if(currentlyPressedKeys[37]){
+                ennemy.move(0, -speed);
+                preceEnnemy = "Q";
+            }
+
+            if (currentlyPressedKeys[38] && (preceEnnemy === "Q" || preceEnnemy === "D")) { // Z
+                ennemy.move(speed*0.707, 0);
+                preceEnnemy = "Z";
+            }else if(currentlyPressedKeys[38] ){
+                ennemy.move(speed, 0);
+                preceEnnemy = "Z";
+            }
+
+            if (currentlyPressedKeys[40] && (preceEnnemy === "Q" || preceEnnemy === "D")) { // S
+                ennemy.move(-speed*0.707, 0);
+                preceEnnemy = "S";
+            }else if(currentlyPressedKeys[40]){
+                ennemy.move(-speed, 0);
+                preceEnnemy = "S";
+            }
+
+            ////////
 
             if (currentlyPressedKeys[68] && (prece === "S" || prece === "Z")) { // D
                 spaceship.move(0, speed*0.707);
@@ -417,7 +455,8 @@
             heightfield = new Heightfield();
             background = new Background(fbo.texture(0));
             spaceship = new Model('models/plane.obj');
-            shootSample = new Splat(null,spaceship.getZ());
+            ennemy = new Ennemy('models/pika.obj');
+            shootSample = new Splat(0,spaceship.getZ());
 
 
             // la couleur de fond sera noire
