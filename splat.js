@@ -14,13 +14,12 @@ function initSplatShader() {
     console.log("splat shader initialized");
 }
 
-function Splat(textureFileName, deep) {
+function Splat(textureFileName) {
     this.initParameters();
 
     var wo2 = 0.5*this.width;
     var ho2 = 0.5*this.height;
 
-    deep = deep-0.9;
     // un tableau contenant les positions des sommets (sur CPU donc)
     var vertices = [
 	-wo2,-ho2, 0.8,
