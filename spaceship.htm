@@ -437,8 +437,10 @@
                 heightfield.setParameters(elapsed);
                 spaceship.setParameters(elapsed);
                 background.setParameters(elapsed);
+                var tabEnnemy = [];
+                tabEnnemy.push(ennemy);
                 for (const splat in splatsArray) {
-                    if (splatsArray[splat].getPosX() < 10 && !splatsArray[splat].collision(ennemy.getBBox())) {
+                    if (splatsArray[splat].getPosX() < 10 && !splatsArray[splat].collision(tabEnnemy)){
                         splatsArray[splat].setParameters(elapsed);
                     } else {
                         splatsArray.splice(splatsArray[splat],1);
