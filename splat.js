@@ -77,8 +77,8 @@ Splat.prototype.shader = function() {
 }
 
 Splat.prototype.initParameters = function() {
-    this.width = 0.1;
-    this.height = 0.1;
+    this.width = 0.05;
+    this.height = 0.05;
     this.position = [0.0 ,-0.7];
 
     this.splatTexture = initTexture("assets/splat.png");

@@ -29,7 +29,7 @@ function Model(filename) {
     this.bbmaxP = [0, 0, 0, 0];
     this.loaded = false;
 
-    this.deepLookAt = 7;
+    this.deepLookAt = 10;
 
     this.load(filename);
 }
