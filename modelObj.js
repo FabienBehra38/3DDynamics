@@ -29,7 +29,7 @@ function Model(filename) {
     this.bbmaxP = [0, 0, 0, 0];
     this.loaded = false;
 
-    this.deepLookAt = 7;
+    this.deepLookAt = 10;
 
     this.load(filename);
 }
@@ -104,6 +104,7 @@ Model.prototype.initParameters = function () {
 
     this.translation = [0, 0, 0];
     this.rotation = 0;
+    this.pv = 100;
 
     // trouver les model/view/proj matrices pour voir l'objet comme vous le souhaitez
     this.modelMatrix = mat4.scale(this.modelMatrix, [0.1, 0.1, 0.1]);
@@ -114,6 +115,14 @@ Model.prototype.initParameters = function () {
 
 Model.prototype.setParameters = function (elapsed) {
     // on pourrait animer des choses ici
+}
+
+Model.prototype.hitted = function(){
+    this.pv -= 10;
+    this.testDead();
+}
+Model.prototype.testDead = function(){
+    return this.pv <= 0;
 }
 
 Model.prototype.move = function (x, y) {
