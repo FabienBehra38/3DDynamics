@@ -14,7 +14,7 @@ function initSplatShader() {
     console.log("splat shader initialized");
 }
 
-function Splat(textureFileName, deep) {
+function Splat(textureFileName, deep, special = false) {
     this.initParameters();
 
     var wo2 = 0.5*this.width;
