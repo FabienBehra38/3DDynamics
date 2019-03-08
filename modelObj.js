@@ -122,7 +122,7 @@ Model.prototype.move = function (x, y) {
     //Deplacement a droite
 
     if (y > 0) {
-        if ((this.getBBox()[0][0]) < 1) {
+        if ((this.getBBox()[0][0]) < 0.89) {
             this.translate(this.translation[0], 0, this.translation[2] - y);
         }
         this.rotate(-0.2);
@@ -136,7 +136,7 @@ Model.prototype.move = function (x, y) {
     }
     //Deplacement en haut
     else if (x > 0) {
-        if ((this.getBBox()[0][1]) < 1) {
+        if ((this.getBBox()[0][1]) < 0.95) {
             this.translate(this.translation[0] - x, 0, this.translation[2]);
         }
     }
