@@ -13,7 +13,7 @@ function initModelShader() {
 
 }
 
-function Model(filename) {
+function Model(filename, ennemy) {
     this.vertexBuffer = gl.createBuffer();
     this.vertexBuffer.itemSize = 0;
     this.vertexBuffer.numItems = 0;
@@ -30,6 +30,7 @@ function Model(filename) {
     this.loaded = false;
 
     this.deepLookAt = 10;
+    this.ennemy = ennemy;
 
     this.load(filename);
 }
@@ -102,12 +103,22 @@ Model.prototype.initParameters = function () {
     this.viewMatrix = mat4.identity();
     this.projMatrix = mat4.identity();
 
-    this.translation = [0, 0, 0];
-    this.rotation = 0;
+    if (this.ennemy) {
+        this.translation = [-3, 0, 0];
+        this.rotation = 1.5;
+    } else {
+        this.translation = [3, 0, 0];
+        this.rotation = 0;
+    }
+    // this.rotation = 0;
     this.pv = 100;
 
     // trouver les model/view/proj matrices pour voir l'objet comme vous le souhaitez
-    this.modelMatrix = mat4.scale(this.modelMatrix, [0.1, 0.1, 0.1]);
+    if (this.ennemy) {
+        this.modelMatrix = mat4.scale(this.modelMatrix, [0.01, 0.01, 0.01]);
+    } else {
+        this.modelMatrix = mat4.scale(this.modelMatrix, [0.1, 0.1, 0.1]);
+    }
     //this.viewMatrix = lookAt(eye,center,up,dest);
     this.viewMatrix = mat4.lookAt([0, this.deepLookAt, 0], [0, 0, 0], [-1, 0, 0]);
     this.projMatrix = mat4.perspective(45.0, 1, 0.1, 30);
@@ -117,42 +128,65 @@ Model.prototype.setParameters = function (elapsed) {
     // on pourrait animer des choses ici
 }
 
-Model.prototype.hitted = function(){
+Model.prototype.hitted = function () {
     this.pv -= 10;
     this.testDead();
 }
-Model.prototype.testDead = function(){
+Model.prototype.testDead = function () {
     return this.pv <= 0;
 }
 
 Model.prototype.move = function (x, y) {
 
-
-    //Deplacement a droite
-
-    if (y > 0) {
-        if ((this.getBBox()[0][0]) < 0.89) {
-            this.translate(this.translation[0], 0, this.translation[2] - y);
+    if (this.ennemy) {
+        if (y > 0) {
+            if ((this.getBBox()[0][0]) < 0.89) {
+                this.translate(this.translation[0], 0, this.translation[2] - y);
+            }
         }
-        this.rotate(-0.2);
-    }
-    //Deplacement a gauche
-    else if (y < 0) {
-        if ((this.getBBox()[1][0]) > -1) {
-            this.translate(this.translation[0], 0, this.translation[2] - y);
+        //Deplacement a gauche
+        else if (y < 0) {
+            if ((this.getBBox()[1][0]) > -1) {
+                this.translate(this.translation[0], 0, this.translation[2] - y);
+            }
         }
-        this.rotate(0.1);
-    }
-    //Deplacement en haut
-    else if (x > 0) {
-        if ((this.getBBox()[0][1]) < 0) {
-            this.translate(this.translation[0] - x, 0, this.translation[2]);
+        //Deplacement en haut
+        else if (x > 0) {
+            if ((this.getBBox()[0][1]) < 0.82) {
+                this.translate(this.translation[0] - x, 0, this.translation[2]);
+            }
         }
-    }
-    //Deplacement en bas
-    else {
-        if ((this.getBBox()[1][1]) > -1) {
-            this.translate(this.translation[0] - x, 0, this.translation[2]);
+        //Deplacement en bas
+        else {
+            if ((this.getBBox()[1][1]) > 0.2) {
+                this.translate(this.translation[0] - x, 0, this.translation[2]);
+            }
+        }
+    } else {
+        if (y > 0) {
+            if ((this.getBBox()[0][0]) < 0.89) {
+                this.translate(this.translation[0], 0, this.translation[2] - y);
+            }
+            this.rotate(-0.2);
+        }
+        //Deplacement a gauche
+        else if (y < 0) {
+            if ((this.getBBox()[1][0]) > -1) {
+                this.translate(this.translation[0], 0, this.translation[2] - y);
+            }
+            this.rotate(0.1);
+        }
+        //Deplacement en haut
+        else if (x > 0) {
+            if ((this.getBBox()[0][1]) < 0) {
+                this.translate(this.translation[0] - x, 0, this.translation[2]);
+            }
+        }
+        //Deplacement en bas
+        else {
+            if ((this.getBBox()[1][1]) > -1) {
+                this.translate(this.translation[0] - x, 0, this.translation[2]);
+            }
         }
     }
 
@@ -196,10 +230,13 @@ Model.prototype.getZ = function () {
 
 Model.prototype.sendUniformVariables = function () {
     if (this.loaded) {
-
         var rMat = mat4.create();
-        var tMat = mat4.create();
-        mat4.rotate(mat4.identity(), this.rotation, [1, 0, 0], rMat);
+        var tMat = mat4.create()
+        if (this.ennemy) {
+            mat4.rotate(mat4.identity(), this.rotation, [0, 1, 1], rMat);
+        } else {
+            mat4.rotate(mat4.identity(), this.rotation, [1, 0, 0], rMat);
+        }
         mat4.translate(mat4.identity(), this.translation, tMat);
         mat4.multiply(tMat, rMat, this.currentTransform);
 
@@ -230,7 +267,9 @@ Model.prototype.sendUniformVariables = function () {
         this.bbmaxP[2] /= this.bbmaxP[3];
         this.bbmaxP[3] /= this.bbmaxP[3];
 
-        this.resetRotation();
+        if (!this.ennemy) {
+            this.resetRotation();
+        }
 
 
     }
