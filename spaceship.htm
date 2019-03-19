@@ -291,8 +291,10 @@
                 v.draw();
             });
             $.each(specialShoot, function(k,v){
-                v.sendUniformVariables();
-                v.draw();
+                if(v != null){
+                    v.sendUniformVariables();
+                    v.draw();
+                }
             });
             // on desactive la transparence
             gl.disable(gl.BLEND);
@@ -406,11 +408,13 @@
             if (currentlyPressedKeys[50]) { // é
                 if (specialShoot[specialShoot.length-1]==null || specialShoot[specialShoot.length-1].getPosX() > specialShoot[specialShoot.length-1].getPosDebut()+10 ) {
                     // just to test how a aplat works
+                    specialShoot = []; // on vide le tableau
                     specialShoot.push(new Splat(0));
                     specialShoot.push(new Splat(0));
                     specialShoot.push(new Splat(0));
                     const frontShip = spaceship.getBBox();
                     for(let i = 0 ; i < specialShoot.length; i++) {
+                        console.log(specialShoot);
                         specialShoot[i].setPosition((frontShip[0][0] + frontShip[1][0]) / 2, frontShip[0][1]);
                         specialShoot[i].setPosDebut(frontShip[0][1]);
                     }
@@ -423,8 +427,6 @@
             //var newx = 2.0*(event.clientX/gl.viewportWidth)-1.0;
             //var newy = -(2.0*(event.clientY/gl.viewportHeight)-1.0);
         }
-
-
         // animation
         var lastTime = 0;
 
@@ -445,7 +447,7 @@
                     }
                 }
                 for (let i =0 ; i< specialShoot.length ; i++){
-                    if (specialShoot[i].getPosX() < 5) {
+                    if (specialShoot[i] != null && specialShoot[i].getPosX() < 5 && !specialShoot[i].collision(ennemy.getBBox())) {
                         if( i === 0){
                             specialShoot[i].setSpecialParametersLeft(elapsed);
                         }else if (i === 2){
@@ -454,7 +456,7 @@
                             specialShoot[i].setParameters(elapsed);
                         }
                     } else {
-                        specialShoot.splice(specialShoot[i],1);
+                        specialShoot[i] = null; //pour supprimer le dernier splat
                     }
                 }
             }
