@@ -9,7 +9,6 @@
     <script type="text/javascript" src="heightfield.js"></script>
     <script type="text/javascript" src="background.js"></script>
     <script type="text/javascript" src="modelObj.js"></script>
-    <script type="text/javascript" src="ennemy.js"></script>
     <script type="text/javascript" src="splat.js"></script>
     <script type="text/javascript" src="libs/jQuery.js"></script>
 
@@ -280,6 +279,7 @@
 
             gl.useProgram(ennemy.shader());
             ennemy.sendUniformVariables();
+            // ennemy.setScale();
             ennemy.draw();
 
             // test pour afficher un splat quand on appuie sur espace
@@ -439,8 +439,10 @@
                 heightfield.setParameters(elapsed);
                 spaceship.setParameters(elapsed);
                 background.setParameters(elapsed);
+                var tabEnnemy = [];
+                tabEnnemy.push(ennemy);
                 for (const splat in splatsArray) {
-                    if (splatsArray[splat].getPosX() < 10 && !splatsArray[splat].collision(ennemy.getBBox())) {
+                    if (splatsArray[splat].getPosX() < 10 && !splatsArray[splat].collision(tabEnnemy)){
                         splatsArray[splat].setParameters(elapsed);
                     } else {
                         splatsArray.splice(splatsArray[splat],1);
@@ -485,9 +487,10 @@
 
             heightfield = new Heightfield();
             background = new Background(fbo.texture(0));
-            spaceship = new Model('models/plane.obj');
-            ennemy = new Ennemy('models/pika.obj');
-            shootSample = new Splat(null,spaceship.getZ());
+            spaceship = new Model('models/plane.obj', false);
+            ennemy = new Model('models/pika.obj', true);
+            // ennemy.setScale();
+            shootSample = new Splat(0,spaceship.getZ());
 
             // for(let i =0; i<specialShoot.length; i++){
             //     specialShoot.push(new Splat(null, spaceship.getZ()));

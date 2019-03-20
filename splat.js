@@ -77,8 +77,8 @@ Splat.prototype.shader = function() {
 }
 
 Splat.prototype.initParameters = function() {
-    this.width = 0.1;
-    this.height = 0.1;
+    this.width = 0.05;
+    this.height = 0.05;
     this.position = [0.0 ,-0.7];
 
     this.splatTexture = initTexture("assets/splat.png");
@@ -125,8 +125,20 @@ Splat.prototype.draw = function() {
     }
 };
 
-Splat.prototype.collision = function(pos){
-  return this.position[0]>pos[0][0] && this.position[0]<pos[1][0] &&  this.position[1]>pos[1][1]&& this.position[1]<pos[0][1];
+Splat.prototype.collision = function(tabEnnemy){
+    for(var i = 0; i<tabEnnemy.length; i++){
+        let pos = tabEnnemy[i].getBBox();
+        return this.position[0]>pos[1][0]-0.1 && this.position[0]<pos[0][0]+0.06 && this.position[1]>pos[1][1]-0.2 && this.position[1]<pos[0][1];//&& this.position[1]<pos[0][1];
+        // return this.position[0]>pos[1][0];
+        // return this.position[0]<pos[0][0];
+
+        // return this.position[1]>pos[1][1];
+        // return this.position[1]<pos[0][1];
+        // return this.position[1]>pos[1][1]&& this.position[1]<pos[0][1];
+        // return (!this.position[1]<pos[1][1]);
+        return false;
+    }
+
 };
 
 
