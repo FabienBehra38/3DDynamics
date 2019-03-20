@@ -11,7 +11,7 @@
     <script type="text/javascript" src="modelObj.js"></script>
     <script type="text/javascript" src="splat.js"></script>
     <script type="text/javascript" src="libs/jQuery.js"></script>
-
+    <link rel="stylesheet" type="text/css" href="assets/style.css">
     <script id="heightfield-vs" type="x-shader/x-vertex">#version 300 es
       // *** le vertex shader ***
       layout(location=0) in vec3 aVertexPosition; // la position du sommet 
@@ -443,9 +443,14 @@
             }
         }
 
-        function CestLeTrucQuiAfficheLesBarresDeProgressionPourLeTempsEntreLesSpecialShoots() {
+        function specialShootsProgressBar() {
             $("#specialShootPlane").val(new Date().getTime() - timeLastSpecialShoot);
             //$("#specialShootPikachu").val(new Date().getTime() - timeLastSpecialShoot); => pour le pikachu
+        }
+
+        function lifesProgressBar() {
+            $("#lifePikachu").val(ennemy.pv);
+            $("#lifePlane").val(spaceship.pv);
         }
 
         // animation
@@ -525,7 +530,8 @@
                 }
             }
             lastTime = timeNow;
-            CestLeTrucQuiAfficheLesBarresDeProgressionPourLeTempsEntreLesSpecialShoots();
+            specialShootsProgressBar();
+            lifesProgressBar();
         }
 
 
@@ -593,13 +599,28 @@
 
 
 <body onload="webGLStart();">
-<canvas id="SpaceShip" style="border: none;" width="800" height="800"></canvas>
-<div class="infoPlayers">
-    <label for="specialShootPlane">Special shoot Avion</label>
-    <progress id="specialShootPlane" max="3500" value="3500"></progress>
-
-    <label for="specialShootPikachu">Special shoot Peakachoux</label>
-    <progress id="specialShootPikachu" max="3500" value="3500"></progress>
+<div class="infoPlayerPikachu">
+    <div class="specialShoot">
+        <label for="specialShootPikachu">Special shoot Pikachu</label>
+        <progress id="specialShootPikachu" max="3500" value="3500"></progress>
+    </div>
+    <div class="life">
+        <label for="lifePikachu">Vie Pikachu</label>
+        <progress id="lifePikachu" max="100" value="100"></progress>
+    </div>
 </div>
+
+<canvas id="SpaceShip" style="border: none;" width="800" height="800"></canvas>
+<div class="infoPlayerPlane">
+    <div class="specialShoot">
+        <label for="specialShootPlane">Special shoot Avion</label>
+        <progress id="specialShootPlane" max="3500" value="3500"></progress>
+    </div>
+    <div class="life">
+        <label for="lifePlane">Vie Avion</label>
+        <progress id="lifePlane" max="100" value="100"></progress>
+    </div>
+</div>
+
 </body>
 </html>
