@@ -128,15 +128,7 @@ Splat.prototype.draw = function() {
 Splat.prototype.collision = function(tabEnnemy){
     for(var i = 0; i<tabEnnemy.length; i++){
         let pos = tabEnnemy[i].getBBox();
-        return this.position[0]>pos[1][0]-0.1 && this.position[0]<pos[0][0]+0.06 && this.position[1]>pos[1][1]-0.2 && this.position[1]<pos[0][1];//&& this.position[1]<pos[0][1];
-        // return this.position[0]>pos[1][0];
-        // return this.position[0]<pos[0][0];
-
-        // return this.position[1]>pos[1][1];
-        // return this.position[1]<pos[0][1];
-        // return this.position[1]>pos[1][1]&& this.position[1]<pos[0][1];
-        // return (!this.position[1]<pos[1][1]);
-        return false;
+        return this.position[0]>pos[0][0] && this.position[0]<pos[1][0] &&  this.position[1]>pos[1][1]&& this.position[1]<pos[0][1];
     }
 
 };
