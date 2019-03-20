@@ -29,6 +29,7 @@
 
 
 
+
     </script>
 
     <script id="heightfield-fs" type="x-shader/x-fragment">#version 300 es
@@ -89,6 +90,7 @@
 
 
 
+
     </script>
 
     <script id="background-vs" type="x-shader/x-vertex">#version 300 es
@@ -105,6 +107,7 @@
           // stockage de la coordonnee de texture
           vTextureCoord = aVertexCoord;
       }
+
 
 
 
@@ -167,6 +170,7 @@
 
 
 
+
     </script>
 
     <script id="model-vs" type="x-shader/x-vertex">#version 300 es
@@ -185,6 +189,7 @@
           gl_Position = uProjMatrix * uViewMatrix * uModelMatrix * vec4(aVertexPosition, 1.0);
           vNormal = mat3(inverse(transpose(uViewMatrix * uModelMatrix)))*normalize(aVertexNormal);
       }
+
 
 
 
@@ -219,6 +224,7 @@
 
 
 
+
     </script>
 
     <script id="splat-vs" type="x-shader/x-vertex">#version 300 es
@@ -239,6 +245,7 @@
 
 
 
+
     </script>
 
     <script id="splat-fs" type="x-shader/x-fragment">#version 300 es
@@ -256,6 +263,7 @@
 
 
 
+
     </script>
 
     <script type="text/javascript">
@@ -267,7 +275,7 @@
         var spaceship;
         var ennemy;
         var shootSample;
-        var timeNow ;
+        var timeNow;
         var specialShoot = [];
         const speed = 0.15;
         var prece, preceEnnemy;
@@ -413,27 +421,27 @@
 
             if (currentlyPressedKeys[32]) { // SPACE
                 timeNow = new Date().getTime();
-                if (timeNow-timeLastNormalShoot >= 500) {
+                if (timeNow - timeLastNormalShoot >= 500) {
                     // just to test how a aplat works
-                    var newSplat = new Splat(0);
+                    var newSplat = new Splat(0, 'haut');
                     splatsArray.push(newSplat);
                     var frontShip = spaceship.getBBox();
                     newSplat.setPosition((frontShip[0][0] + frontShip[1][0]) / 2, frontShip[0][1]);
-                     newSplat.setPosDebut(frontShip[0][1]);
+                    newSplat.setPosDebut(frontShip[0][1]);
 
-                     timeLastNormalShoot = new Date().getTime();
+                    timeLastNormalShoot = new Date().getTime();
                 }
             }
 
             if (currentlyPressedKeys[50]) { // é
                 timeNow = new Date().getTime();
                 //un tir spécial toutes les 1200 ms
-                if(timeNow-timeLastSpecialShoot >= 3500) {
-                    specialShoot = [new Splat(0),new Splat(0),new Splat(0)]; // on refait le tableau de splat
+                if (timeNow - timeLastSpecialShoot >= 3500) {
+                    specialShoot = [new Splat(0, 'haut'), new Splat(0, 'hautG'), new Splat(0, 'hautD')]; // on refait le tableau de splat
 
                     //Pour chaque splat, on définition l'orgine comme étant le nez de l'avion
                     const frontShip = spaceship.getBBox();
-                    for(let i = 0 ; i < specialShoot.length; i++) {
+                    for (let i = 0; i < specialShoot.length; i++) {
                         specialShoot[i].setPosition((frontShip[0][0] + frontShip[1][0]) / 2, frontShip[0][1]);
                         specialShoot[i].setPosDebut(frontShip[0][1]);
                     }
@@ -450,6 +458,7 @@
 
         // animation
         var lastTime = 0;
+
         function animate() {
             var timeNow = new Date().getTime();
             if (lastTime !== 0) {
@@ -513,13 +522,7 @@
 
             for (let i = 0; i < specialShoot.length; i++) {
                 if (specialShoot[i] != null && specialShoot[i].getPosX() < 5) {
-                    if (i === 0) {
-                        specialShoot[i].setSpecialParametersLeft();
-                    } else if (i === specialShoot.length - 1) {
-                        specialShoot[i].setSpecialParametersRight()
-                    } else {
-                        specialShoot[i].setParameters();
-                    }
+                    specialShoot[i].setParameters();
                 } else {
                     specialShoot[i] = null;
                 }
