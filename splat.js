@@ -14,7 +14,8 @@ function initSplatShader() {
     console.log("splat shader initialized");
 }
 
-function Splat(textureFileName, deplacement = 'haut') {
+function Splat(textureFileName, deplacement = 'haut', appartient) {
+    this.appartient = appartient;
     this.deplacement = deplacement;
     this.initParameters();
 
@@ -93,7 +94,7 @@ Splat.prototype.setPosition = function (x, y) {
 Splat.prototype.setParameters = function () {
     // we could animate something here
 
-    switch (this.deplacement){
+    switch (this.deplacement) {
         case 'haut':
             this.position[1] += 0.04;
             break;
@@ -149,11 +150,15 @@ Splat.prototype.draw = function () {
 
 Splat.prototype.collision = function (tabEnnemy) {
     for (var i = 0; i < tabEnnemy.length; i++) {
-        let pos = tabEnnemy[i].getBBox();
-        if (this.position[0] > pos[0][0] && this.position[0] < pos[1][0] && this.position[1] > pos[1][1] && this.position[1] < pos[0][1]) {
-            return tabEnnemy[i];
+        if (tabEnnemy[i] != this.appartient) {
+            console.log(tabEnnemy[i].getBBox());
+            let pos = tabEnnemy[i].getBBox();
+            if (this.position[0] > pos[0][0] && this.position[0] < pos[1][0] && this.position[1] > pos[1][1] && this.position[1] < pos[0][1]) { //HitBox en 3D à changé !!!!!
+                return tabEnnemy[i];
+            }
         }
     }
+
     return null;
 };
 

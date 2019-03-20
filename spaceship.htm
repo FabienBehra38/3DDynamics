@@ -30,6 +30,9 @@
 
 
 
+
+
+
     </script>
 
     <script id="heightfield-fs" type="x-shader/x-fragment">#version 300 es
@@ -52,7 +55,7 @@
       }
 
       float vnoise(in vec2 p) {
-	  // genere une valeur random sur une position spÃ©cifique d'une grille
+	  // genere une valeur random sur une position spécifique d'une grille
 	  // pris sur shadertoy
 	  vec2 i = floor(p);
 	  vec2 f = fract(p);
@@ -91,6 +94,9 @@
 
 
 
+
+
+
     </script>
 
     <script id="background-vs" type="x-shader/x-vertex">#version 300 es
@@ -107,6 +113,9 @@
           // stockage de la coordonnee de texture
           vTextureCoord = aVertexCoord;
       }
+
+
+
 
 
 
@@ -171,6 +180,9 @@
 
 
 
+
+
+
     </script>
 
     <script id="model-vs" type="x-shader/x-vertex">#version 300 es
@@ -189,6 +201,9 @@
           gl_Position = uProjMatrix * uViewMatrix * uModelMatrix * vec4(aVertexPosition, 1.0);
           vNormal = mat3(inverse(transpose(uViewMatrix * uModelMatrix)))*normalize(aVertexNormal);
       }
+
+
+
 
 
 
@@ -225,6 +240,9 @@
 
 
 
+
+
+
     </script>
 
     <script id="splat-vs" type="x-shader/x-vertex">#version 300 es
@@ -242,6 +260,9 @@
 	  // stockage de la coordonnee de texture
 	  vTextureCoord = aVertexCoord;
       }
+
+
+
 
 
 
@@ -264,18 +285,23 @@
 
 
 
+
+
+
     </script>
 
     <script type="text/javascript">
         var fbo;
+        var PeakatimeLastSpecialShoot = new Date().getTime() - 3500; //cherche pas
+        var PeakatimeLastNormalShoot = new Date().getTime() - 500; //ça non plus
         var timeLastSpecialShoot = new Date().getTime() - 3500; //cherche pas
-        var timeLastNormalShoot = new Date().getTime() - 500; //Ã§a non plus
+        var timeLastNormalShoot = new Date().getTime() - 500; //ça non plus
         var heightfield;
         var background;
         var spaceship;
         var ennemy;
         var shootSample;
-        var timeNow;
+        var SpaceShipTimeNow, PeakATimeNow;
         var specialShoot = [];
         const speed = 0.15;
         var prece, preceEnnemy;
@@ -420,10 +446,10 @@
             }
 
             if (currentlyPressedKeys[32]) { // SPACE
-                timeNow = new Date().getTime();
-                if (timeNow - timeLastNormalShoot >= 500) {
+                SpaceShipTimeNow = new Date().getTime();
+                if (SpaceShipTimeNow - timeLastNormalShoot >= 500) {
                     // just to test how a aplat works
-                    var newSplat = new Splat(0, 'haut');
+                    var newSplat = new Splat(0, 'haut', spaceship);
                     splatsArray.push(newSplat);
                     var frontShip = spaceship.getBBox();
                     newSplat.setPosition((frontShip[0][0] + frontShip[1][0]) / 2, frontShip[0][1]);
@@ -433,13 +459,27 @@
                 }
             }
 
-            if (currentlyPressedKeys[50]) { // Ã©
-                timeNow = new Date().getTime();
-                //un tir spÃ©cial toutes les 1200 ms
-                if (timeNow - timeLastSpecialShoot >= 3500) {
-                    specialShoot = [new Splat(0, 'haut'), new Splat(0, 'hautG'), new Splat(0, 'hautD')]; // on refait le tableau de splat
+            if (currentlyPressedKeys[13]) { // ENTER
+                PeakATimeNow = new Date().getTime();
+                if (PeakATimeNow - PeakatimeLastNormalShoot >= 500) {
+                    // just to test how a aplat works
+                    var newSplat = new Splat(0, 'bas', ennemy);
+                    splatsArray.push(newSplat);
+                    var frontPeaka = ennemy.getBBox();
+                    newSplat.setPosition((frontPeaka[0][0] + frontPeaka[1][0]) / 2, frontPeaka[0][1]);
+                    newSplat.setPosDebut(frontPeaka[0][1]);
 
-                    //Pour chaque splat, on dÃ©finition l'orgine comme Ã©tant le nez de l'avion
+                    PeakatimeLastNormalShoot = new Date().getTime();
+                }
+            }
+
+            if (currentlyPressedKeys[50]) { // é
+                SpaceShipTimeNow = new Date().getTime();
+                //un tir spécial toutes les 1200 ms
+                if (SpaceShipTimeNow - timeLastSpecialShoot >= 3500) {
+                    specialShoot = [new Splat(0, 'haut', spaceship), new Splat(0, 'hautG', spaceship), new Splat(0, 'hautD', spaceship)]; // on refait le tableau de splat
+
+                    //Pour chaque splat, on définition l'orgine comme étant le nez de l'avion
                     const frontShip = spaceship.getBBox();
                     for (let i = 0; i < specialShoot.length; i++) {
                         specialShoot[i].setPosition((frontShip[0][0] + frontShip[1][0]) / 2, frontShip[0][1]);
@@ -449,11 +489,29 @@
                     timeLastSpecialShoot = new Date().getTime();
                 }
             }
+
+            if (currentlyPressedKeys[8]) { // effacer
+                PeakATimeNow = new Date().getTime();
+                //un tir spécial toutes les 1200 ms
+                if (PeakATimeNow - PeakatimeLastSpecialShoot >= 3500) {
+                    specialShoot = [new Splat(0, 'bas', ennemy), new Splat(0, 'basG', ennemy), new Splat(0, 'basD', ennemy)]; // on refait le tableau de splat
+
+                    //Pour chaque splat, on définition l'orgine comme étant le nez de l'avion
+                    const frontPeaka = ennemy.getBBox();
+                    for (let i = 0; i < specialShoot.length; i++) {
+                        specialShoot[i].setPosition((frontPeaka[0][0] + frontPeaka[1][0]) / 2, frontPeaka[0][1]);
+                        specialShoot[i].setPosDebut(frontPeaka[0][1]);
+                    }
+                    //On enregistre le temps du dernier tir
+                    PeakatimeLastSpecialShoot = new Date().getTime();
+                }
+            }
+
         }
 
         function CestLeTrucQuiAfficheLesBarresDeProgressionPourLeTempsEntreLesSpecialShoots() {
             $("#specialShootPlane").val(new Date().getTime() - timeLastSpecialShoot);
-            //$("#specialShootPikachu").val(new Date().getTime() - timeLastSpecialShoot); => pour le pikachu
+            $("#specialShootPikachu").val(new Date().getTime() - PeakatimeLastSpecialShoot);
         }
 
         // animation
@@ -463,7 +521,7 @@
             var timeNow = new Date().getTime();
             if (lastTime !== 0) {
                 // anime chacun des objets de la scene
-                // si necessaire (en fonction du temps ecoulï¿½)
+                // si necessaire (en fonction du temps ecoule)
                 var elapsed = timeNow - lastTime;
                 heightfield.setParameters(elapsed);
                 spaceship.setParameters(elapsed);
@@ -472,6 +530,7 @@
                 animateSplat()
             }
             lastTime = timeNow;
+            CestLeTrucQuiAfficheLesBarresDeProgressionPourLeTempsEntreLesSpecialShoots();
         }
 
         function hit(ennemy) {
@@ -489,8 +548,7 @@
             let ennemyTouch;
 
             for (const splat in splatsArray) {
-                if (splatsArray[splat].getPosX() < 1) {
-
+                if (splatsArray[splat].getPosX() < 1 && splatsArray[splat].getPosX() > -1) {
                     ennemyTouch = splatsArray[splat].collision(tabEnnemy);
                     if (ennemyTouch == null) {
                         splatsArray[splat].setParameters();
@@ -521,14 +579,12 @@
             }
 
             for (let i = 0; i < specialShoot.length; i++) {
-                if (specialShoot[i] != null && specialShoot[i].getPosX() < 5) {
+                if (specialShoot[i] != null && specialShoot[i].getPosX() < 1 && specialShoot[i].getPosX() > -1) {
                     specialShoot[i].setParameters();
                 } else {
                     specialShoot[i] = null;
                 }
             }
-            lastTime = timeNow;
-            CestLeTrucQuiAfficheLesBarresDeProgressionPourLeTempsEntreLesSpecialShoots();
         }
 
 
