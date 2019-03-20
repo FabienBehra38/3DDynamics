@@ -476,7 +476,7 @@
             let ennemyTouch;
 
             for (const splat in splatsArray) {
-                if (splatsArray[splat].getPosX() < 10) {
+                if (splatsArray[splat].getPosX() < 1) {
 
                     ennemyTouch = splatsArray[splat].collision(tabEnnemy);
                     if (ennemyTouch == null) {
@@ -486,9 +486,11 @@
                         hit(ennemyTouch);
                         console.log("Point de vie : " + ennemyTouch.pv);
                     }
-                } else
+                } else {
 
                     splatsArray.splice(splatsArray[splat], 1);
+                }
+                console.log(splatsArray);
             }
 
 
@@ -500,6 +502,7 @@
                     if (ennemyTouch != null) {
                         specialShoot[splat] = null;
                         hit(ennemyTouch);
+                        console.log("Point de vie : " + ennemyTouch.pv);
                     }
                 }
 
