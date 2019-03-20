@@ -449,7 +449,7 @@
                     }
                 }
                 for (let i =0 ; i< specialShoot.length ; i++){
-                    if (specialShoot[i] != null && specialShoot[i].getPosX() < 5 && !specialShoot[i].collision(ennemy.getBBox())) {
+                    if (specialShoot[i] != null && specialShoot[i].getPosX() < 5 && !specialShoot[i].collision(tabEnnemy)) {
                         if( i === 0){
                             specialShoot[i].setSpecialParametersLeft(elapsed);
                         }else if (i === 2){
