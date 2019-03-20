@@ -130,7 +130,6 @@ Model.prototype.setParameters = function (elapsed) {
 
 Model.prototype.hitted = function () {
     this.pv -= 10;
-    this.testDead();
 }
 Model.prototype.testDead = function () {
     return this.pv <= 0;
