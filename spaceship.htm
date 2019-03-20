@@ -267,6 +267,7 @@
         var spaceship;
         var ennemy;
         var shootSample;
+        var timeNow ;
         var specialShoot = [];
         const speed = 0.15;
         var prece, preceEnnemy;
@@ -411,7 +412,7 @@
             }
 
             if (currentlyPressedKeys[32]) { // SPACE
-                const timeNow = new Date().getTime();
+                timeNow = new Date().getTime();
                 if (timeNow-timeLastNormalShoot >= 500) {
                     // just to test how a aplat works
                     var newSplat = new Splat(0);
@@ -425,7 +426,7 @@
             }
 
             if (currentlyPressedKeys[50]) { // é
-                const timeNow = new Date().getTime();
+                timeNow = new Date().getTime();
                 //un tir spécial toutes les 1200 ms
                 if(timeNow-timeLastSpecialShoot >= 3500) {
                     specialShoot = [new Splat(0),new Splat(0),new Splat(0)]; // on refait le tableau de splat
