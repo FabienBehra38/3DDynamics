@@ -28,6 +28,7 @@
       }
 
 
+
     </script>
 
     <script id="heightfield-fs" type="x-shader/x-fragment">#version 300 es
@@ -87,6 +88,7 @@
       }
 
 
+
     </script>
 
     <script id="background-vs" type="x-shader/x-vertex">#version 300 es
@@ -103,6 +105,7 @@
           // stockage de la coordonnee de texture
           vTextureCoord = aVertexCoord;
       }
+
 
 
     </script>
@@ -163,6 +166,7 @@
 
 
 
+
     </script>
 
     <script id="model-vs" type="x-shader/x-vertex">#version 300 es
@@ -181,6 +185,7 @@
           gl_Position = uProjMatrix * uViewMatrix * uModelMatrix * vec4(aVertexPosition, 1.0);
           vNormal = mat3(inverse(transpose(uViewMatrix * uModelMatrix)))*normalize(aVertexNormal);
       }
+
 
 
     </script>
@@ -213,6 +218,7 @@
       }
 
 
+
     </script>
 
     <script id="splat-vs" type="x-shader/x-vertex">#version 300 es
@@ -232,6 +238,7 @@
       }
 
 
+
     </script>
 
     <script id="splat-fs" type="x-shader/x-fragment">#version 300 es
@@ -246,6 +253,7 @@
 	  //outColor = vec4(alpha*vec3(1,0,0),alpha);
 	  outColor = texture(uTex, vTextureCoord);
       }
+
 
 
     </script>
@@ -422,7 +430,6 @@
                     specialShoot.push(new Splat(0));
                     const frontShip = spaceship.getBBox();
                     for (let i = 0; i < specialShoot.length; i++) {
-                        console.log(specialShoot);
                         specialShoot[i].setPosition((frontShip[0][0] + frontShip[1][0]) / 2, frontShip[0][1]);
                         specialShoot[i].setPosDebut(frontShip[0][1]);
                     }
@@ -448,6 +455,8 @@
                 heightfield.setParameters(elapsed);
                 spaceship.setParameters(elapsed);
                 background.setParameters(elapsed);
+
+                animateSplat()
             }
             lastTime = timeNow;
         }
@@ -471,10 +480,11 @@
 
                     ennemyTouch = splatsArray[splat].collision(tabEnnemy);
                     if (ennemyTouch == null) {
-                        splatsArray[splat].setParameters(elapsed);
+                        splatsArray[splat].setParameters();
                     } else {
                         splatsArray.splice(splatsArray[splat], 1);
                         hit(ennemyTouch);
+                        console.log("Point de vie : " + ennemyTouch.pv);
                     }
                 } else
 
@@ -483,27 +493,29 @@
 
 
             for (const splat in specialShoot) {
-                ennemyTouch = specialShoot[splat].collision(tabEnnemy);
 
-                if(ennemyTouch != null) {
-                    specialShoot.splice(specialShoot[splat], 1);
-                    hit(ennemyTouch);
+                if (specialShoot[splat] != null) {
+                    ennemyTouch = specialShoot[splat].collision(tabEnnemy);
+
+                    if (ennemyTouch != null) {
+                        specialShoot[splat] = null;
+                        hit(ennemyTouch);
+                    }
                 }
 
             }
 
-            for (let i = 0; i<specialShoot.length; i++) {
-                if(specialShoot[i].getPosX() < 5 && specialShoot[i] != null){
+            for (let i = 0; i < specialShoot.length; i++) {
+                if (specialShoot[i] != null && specialShoot[i].getPosX() < 5) {
                     if (i === 0) {
-                        specialShoot[i].setSpecialParametersLeft(elapsed);
-                    } else if (i === specialShoot.length-1) {
-                        specialShoot[i].setSpecialParametersRight(elapsed)
+                        specialShoot[i].setSpecialParametersLeft();
+                    } else if (i === specialShoot.length - 1) {
+                        specialShoot[i].setSpecialParametersRight()
                     } else {
-                        specialShoot[i].setParameters(elapsed);
+                        specialShoot[i].setParameters();
                     }
-                }
-                else {
-                    specialShoot[i] = null; //pour supprimer le dernier splat
+                } else {
+                    specialShoot[i] = null;
                 }
             }
         }
@@ -516,6 +528,8 @@
             animate();
         }
 
+
+        var tabEnnemy = [];
 
         function webGLStart() {
             // initialisation du canvas et des objets OpenGL
@@ -535,7 +549,6 @@
             ennemy = new Model('models/pika.obj', true);
 
 
-            var tabEnnemy = [];
             tabEnnemy.push(ennemy);
             tabEnnemy.push(spaceship);
 
