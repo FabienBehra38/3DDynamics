@@ -244,6 +244,7 @@
 
     <script type="text/javascript">
         var fbo;
+        var timeLastShoot = new Date().getTime() - 1200; //cherche pas
         var heightfield;
         var background;
         var spaceship;
@@ -406,33 +407,28 @@
             }
 
             if (currentlyPressedKeys[50]) { // é
-                if (specialShoot[specialShoot.length-1]==null || specialShoot[specialShoot.length-1].getPosX() > specialShoot[specialShoot.length-1].getPosDebut()+10 ) {
-                    // just to test how a aplat works
-                    specialShoot = []; // on vide le tableau
-                    specialShoot.push(new Splat(0));
-                    specialShoot.push(new Splat(0));
-                    specialShoot.push(new Splat(0));
+                const timeNow = new Date().getTime();
+                //un tir spécial toutes les 1200 ms
+                if(timeNow-timeLastShoot >= 1200) {
+                    specialShoot = [new Splat(0),new Splat(0),new Splat(0)]; // on refait le tableau de splat
+
+                    //Pour chaque splat, on définition l'orgine comme étant le nez de l'avion
                     const frontShip = spaceship.getBBox();
                     for(let i = 0 ; i < specialShoot.length; i++) {
-                        console.log(specialShoot);
                         specialShoot[i].setPosition((frontShip[0][0] + frontShip[1][0]) / 2, frontShip[0][1]);
                         specialShoot[i].setPosDebut(frontShip[0][1]);
                     }
+                    //On enregistre le temps du dernier tir
+                    timeLastShoot = new Date().getTime();
                 }
             }
         }
 
-        function mouseMove(event) {
-            // recup evenement souris
-            //var newx = 2.0*(event.clientX/gl.viewportWidth)-1.0;
-            //var newy = -(2.0*(event.clientY/gl.viewportHeight)-1.0);
-        }
         // animation
         var lastTime = 0;
-
         function animate() {
             var timeNow = new Date().getTime();
-            if (lastTime != 0) {
+            if (lastTime !== 0) {
                 // anime chacun des objets de la scene
                 // si necessaire (en fonction du temps ecoul�)
                 var elapsed = timeNow - lastTime;
@@ -449,7 +445,7 @@
                     }
                 }
                 for (let i =0 ; i< specialShoot.length ; i++){
-                    if (specialShoot[i] != null && specialShoot[i].getPosX() < 5 && !specialShoot[i].collision(tabEnnemy)) {
+                    if (specialShoot[i] != null && specialShoot[i].getPosX() < 200 && !specialShoot[i].collision(tabEnnemy)) {
                         if( i === 0){
                             specialShoot[i].setSpecialParametersLeft(elapsed);
                         }else if (i === 2){
