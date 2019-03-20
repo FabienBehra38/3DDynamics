@@ -244,7 +244,8 @@
 
     <script type="text/javascript">
         var fbo;
-        var timeLastShoot = new Date().getTime() - 1200; //cherche pas
+        var timeLastSpecialShoot = new Date().getTime() - 3500; //cherche pas
+        var timeLastNormalShoot = new Date().getTime() - 500; //ça non plus
         var heightfield;
         var background;
         var spaceship;
@@ -394,22 +395,23 @@
             }
 
             if (currentlyPressedKeys[32]) { // SPACE
-                // if (splatsArray[splatsArray.length-1]==null || splatsArray[splatsArray.length-1].getPosX() > 0.5) {
-                if (splatsArray[splatsArray.length-1]==null || splatsArray[splatsArray.length-1].getPosX() > splatsArray[splatsArray.length-1].getPosDebut()+0.8 ) {
+                const timeNow = new Date().getTime();
+                if (timeNow-timeLastNormalShoot >= 500) {
                     // just to test how a aplat works
                     var newSplat = new Splat(0);
                     splatsArray.push(newSplat);
                     var frontShip = spaceship.getBBox();
                     newSplat.setPosition((frontShip[0][0] + frontShip[1][0]) / 2, frontShip[0][1]);
                      newSplat.setPosDebut(frontShip[0][1]);
-                }
 
+                     timeLastNormalShoot = new Date().getTime();
+                }
             }
 
             if (currentlyPressedKeys[50]) { // é
                 const timeNow = new Date().getTime();
                 //un tir spécial toutes les 1200 ms
-                if(timeNow-timeLastShoot >= 1200) {
+                if(timeNow-timeLastSpecialShoot >= 3500) {
                     specialShoot = [new Splat(0),new Splat(0),new Splat(0)]; // on refait le tableau de splat
 
                     //Pour chaque splat, on définition l'orgine comme étant le nez de l'avion
@@ -419,9 +421,14 @@
                         specialShoot[i].setPosDebut(frontShip[0][1]);
                     }
                     //On enregistre le temps du dernier tir
-                    timeLastShoot = new Date().getTime();
+                    timeLastSpecialShoot = new Date().getTime();
                 }
             }
+        }
+
+        function CestLeTrucQuiAfficheLesBarresDeProgressionPourLeTempsEntreLesSpecialShoots() {
+            $("#specialShootPlane").val(new Date().getTime() - timeLastSpecialShoot);
+            //$("#specialShootPikachu").val(new Date().getTime() - timeLastSpecialShoot); => pour le pikachu
         }
 
         // animation
@@ -438,7 +445,7 @@
                 var tabEnnemy = [];
                 tabEnnemy.push(ennemy);
                 for (const splat in splatsArray) {
-                    if (splatsArray[splat].getPosX() < 10 && !splatsArray[splat].collision(tabEnnemy)){
+                    if (splatsArray[splat].getPosX() < 1 && !splatsArray[splat].collision(tabEnnemy)){
                         splatsArray[splat].setParameters(elapsed);
                     } else {
                         splatsArray.splice(splatsArray[splat],1);
@@ -459,6 +466,7 @@
                 }
             }
             lastTime = timeNow;
+            CestLeTrucQuiAfficheLesBarresDeProgressionPourLeTempsEntreLesSpecialShoots();
         }
 
         function tick() {
@@ -519,5 +527,12 @@
 
 <body onload="webGLStart();">
 <canvas id="SpaceShip" style="border: none;" width="800" height="800"></canvas>
+<div class="infoPlayers">
+    <label for="specialShootPlane">Special shoot Avion</label>
+    <progress id="specialShootPlane" max="3500" value="3500"></progress>
+
+    <label for="specialShootPikachu">Special shoot Peakachoux</label>
+    <progress id="specialShootPikachu" max="3500" value="3500"></progress>
+</div>
 </body>
 </html>
