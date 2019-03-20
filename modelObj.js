@@ -140,25 +140,25 @@ Model.prototype.move = function (x, y) {
 
     if (this.ennemy) {
         if (y > 0) {
-            if ((this.getBBox()[0][0]) < 0.89) {
+            if ((this.getBBox()[0][0]) < 0.78) {
                 this.translate(this.translation[0], 0, this.translation[2] - y);
             }
         }
         //Deplacement a gauche
         else if (y < 0) {
-            if ((this.getBBox()[1][0]) > -1) {
+            if ((this.getBBox()[1][0]) > -0.85) {
                 this.translate(this.translation[0], 0, this.translation[2] - y);
             }
         }
         //Deplacement en haut
         else if (x > 0) {
-            if ((this.getBBox()[0][1]) < 0.82) {
+            if ((this.getBBox()[0][1]) < 0.95) {
                 this.translate(this.translation[0] - x, 0, this.translation[2]);
             }
         }
         //Deplacement en bas
         else {
-            if ((this.getBBox()[1][1]) > 0.2) {
+            if ((this.getBBox()[1][1]) > 0.15) {
                 this.translate(this.translation[0] - x, 0, this.translation[2]);
             }
         }
@@ -233,7 +233,7 @@ Model.prototype.sendUniformVariables = function () {
         var rMat = mat4.create();
         var tMat = mat4.create()
         if (this.ennemy) {
-            mat4.rotate(mat4.identity(), this.rotation, [0, 1, 1], rMat);
+            mat4.rotate(mat4.identity(), this.rotation, [0, 1, 0], rMat);
         } else {
             mat4.rotate(mat4.identity(), this.rotation, [1, 0, 0], rMat);
         }
