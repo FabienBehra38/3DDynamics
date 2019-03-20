@@ -260,6 +260,8 @@
 
     <script type="text/javascript">
         var fbo;
+        var timeLastSpecialShoot = new Date().getTime() - 3500; //cherche pas
+        var timeLastNormalShoot = new Date().getTime() - 500; //ça non plus
         var heightfield;
         var background;
         var spaceship;
@@ -409,46 +411,47 @@
             }
 
             if (currentlyPressedKeys[32]) { // SPACE
-                // if (splatsArray[splatsArray.length-1]==null || splatsArray[splatsArray.length-1].getPosX() > 0.5) {
-                if (splatsArray[splatsArray.length - 1] == null || splatsArray[splatsArray.length - 1].getPosX() > splatsArray[splatsArray.length - 1].getPosDebut() + 0.8) {
+                const timeNow = new Date().getTime();
+                if (timeNow-timeLastNormalShoot >= 500) {
                     // just to test how a aplat works
                     var newSplat = new Splat(0);
                     splatsArray.push(newSplat);
                     var frontShip = spaceship.getBBox();
                     newSplat.setPosition((frontShip[0][0] + frontShip[1][0]) / 2, frontShip[0][1]);
-                    newSplat.setPosDebut(frontShip[0][1]);
-                }
+                     newSplat.setPosDebut(frontShip[0][1]);
 
+                     timeLastNormalShoot = new Date().getTime();
+                }
             }
 
             if (currentlyPressedKeys[50]) { // é
-                if (specialShoot[specialShoot.length - 1] == null || specialShoot[specialShoot.length - 1].getPosX() > specialShoot[specialShoot.length - 1].getPosDebut() + 10) {
-                    // just to test how a aplat works
-                    specialShoot = []; // on vide le tableau
-                    specialShoot.push(new Splat(0));
-                    specialShoot.push(new Splat(0));
-                    specialShoot.push(new Splat(0));
+                const timeNow = new Date().getTime();
+                //un tir spécial toutes les 1200 ms
+                if(timeNow-timeLastSpecialShoot >= 3500) {
+                    specialShoot = [new Splat(0),new Splat(0),new Splat(0)]; // on refait le tableau de splat
+
+                    //Pour chaque splat, on définition l'orgine comme étant le nez de l'avion
                     const frontShip = spaceship.getBBox();
-                    for (let i = 0; i < specialShoot.length; i++) {
+                    for(let i = 0 ; i < specialShoot.length; i++) {
                         specialShoot[i].setPosition((frontShip[0][0] + frontShip[1][0]) / 2, frontShip[0][1]);
                         specialShoot[i].setPosDebut(frontShip[0][1]);
                     }
+                    //On enregistre le temps du dernier tir
+                    timeLastSpecialShoot = new Date().getTime();
                 }
             }
         }
 
-        function mouseMove(event) {
-            // recup evenement souris
-            //var newx = 2.0*(event.clientX/gl.viewportWidth)-1.0;
-            //var newy = -(2.0*(event.clientY/gl.viewportHeight)-1.0);
+        function CestLeTrucQuiAfficheLesBarresDeProgressionPourLeTempsEntreLesSpecialShoots() {
+            $("#specialShootPlane").val(new Date().getTime() - timeLastSpecialShoot);
+            //$("#specialShootPikachu").val(new Date().getTime() - timeLastSpecialShoot); => pour le pikachu
         }
 
         // animation
         var lastTime = 0;
-
         function animate() {
             var timeNow = new Date().getTime();
-            if (lastTime != 0) {
+            if (lastTime !== 0) {
                 // anime chacun des objets de la scene
                 // si necessaire (en fonction du temps ecoul�)
                 var elapsed = timeNow - lastTime;
@@ -520,6 +523,8 @@
                     specialShoot[i] = null;
                 }
             }
+            lastTime = timeNow;
+            CestLeTrucQuiAfficheLesBarresDeProgressionPourLeTempsEntreLesSpecialShoots();
         }
 
 
@@ -588,5 +593,12 @@
 
 <body onload="webGLStart();">
 <canvas id="SpaceShip" style="border: none;" width="800" height="800"></canvas>
+<div class="infoPlayers">
+    <label for="specialShootPlane">Special shoot Avion</label>
+    <progress id="specialShootPlane" max="3500" value="3500"></progress>
+
+    <label for="specialShootPikachu">Special shoot Peakachoux</label>
+    <progress id="specialShootPikachu" max="3500" value="3500"></progress>
+</div>
 </body>
 </html>
