@@ -48,6 +48,7 @@ progress {
     border: 0;
     height: 20px;
     border-radius: 20px;
+    width: 100%;
 }
 progress::-webkit-progress-bar {
     border: 0;
