@@ -260,8 +260,13 @@
 
     <script type="text/javascript">
         var fbo;
-        var timeLastSpecialShoot = new Date().getTime() - 3500; //cherche pas
-        var timeLastNormalShoot = new Date().getTime() - 500; //ça non plus
+        var INTERVAL_SPECIAL_SHOOT = 3500;
+        var INTERVAL_NORMAL_SHOOT = 500;
+        const TIME_BONUS_NORMAL_SHOOT = 5000;
+        var timeLastSpecialShoot = new Date().getTime() - INTERVAL_SPECIAL_SHOOT; //cherche pas
+        var timeLastNormalShoot = new Date().getTime() - INTERVAL_NORMAL_SHOOT; //ça non plus
+        var isBonusNormalShootAvion, isBonusNormalShootPikachu = false;
+        var timerBonusAvion, timerBonusPikachu = null;
         var heightfield;
         var background;
         var spaceship;
@@ -413,7 +418,7 @@
 
             if (currentlyPressedKeys[32]) { // SPACE
                 timeNow = new Date().getTime();
-                if (timeNow-timeLastNormalShoot >= 500) {
+                if (timeNow-timeLastNormalShoot >= INTERVAL_NORMAL_SHOOT) {
                     // just to test how a aplat works
                     var newSplat = new Splat(0);
                     splatsArray.push(newSplat);
@@ -428,7 +433,7 @@
             if (currentlyPressedKeys[50]) { // é
                 timeNow = new Date().getTime();
                 //un tir spécial toutes les 1200 ms
-                if(timeNow-timeLastSpecialShoot >= 3500) {
+                if(timeNow-timeLastSpecialShoot >= INTERVAL_SPECIAL_SHOOT) {
                     specialShoot = [new Splat(0),new Splat(0),new Splat(0)]; // on refait le tableau de splat
 
                     //Pour chaque splat, on définition l'orgine comme étant le nez de l'avion
@@ -441,6 +446,47 @@
                     timeLastSpecialShoot = new Date().getTime();
                 }
             }
+
+        //#region bonus
+            //bonus cadence de tir normal augmentée
+            if (currentlyPressedKeys[65]) { //a
+                bonusLife(spaceship);
+            }
+
+            if(currentlyPressedKeys[186]) {
+                bonusLife(ennemy);
+            }
+        //#endregion bonus
+
+        }
+
+        function bonusLife(player) {
+            const AUGMENTATION_PV = 10;
+            if(player != null){
+                if (player.pv === player.MAX_PV) {
+                    player.MAX_PV += AUGMENTATION_PV;
+                    player.pv = player.MAX_PV;
+
+                    if(player == ennemy){
+                        $("#lifePikachu").attr('max',player.MAX_PV).attr('value',player.MAX_PV);
+                    }else{
+                        $("#lifePlane").attr('max',player.MAX_PV).attr('value',player.MAX_PV);
+                    }
+                }else{
+                    player.pv = (player.pv+=AUGMENTATION_PV > player.MAX_PV) ? player.MAX_PV : player.pv += AUGMENTATION_PV;
+                }
+            }
+        }
+
+        function bonusIncreaseNormalShoot(startTime){
+            const endTime = startTime.getTime()+5000;
+
+            while(endTime > startTime){
+                INTERVAL_NORMAL_SHOOT = 250;
+                startTime = new Date();
+            }
+
+            INTERVAL_NORMAL_SHOOT = 500;
         }
 
         function specialShootsProgressBar() {

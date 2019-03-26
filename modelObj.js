@@ -111,7 +111,8 @@ Model.prototype.initParameters = function () {
         this.rotation = 0;
     }
     // this.rotation = 0;
-    this.pv = 100;
+    this.MAX_PV = 100;
+    this.pv = this.MAX_PV;
 
     // trouver les model/view/proj matrices pour voir l'objet comme vous le souhaitez
     if (this.ennemy) {
