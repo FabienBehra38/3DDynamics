@@ -11,6 +11,7 @@
     <script type="text/javascript" src="modelObj.js"></script>
     <script type="text/javascript" src="splat.js"></script>
     <script type="text/javascript" src="bonus.js"></script>
+    <script type="text/javascript" src="bonus-utils.js"></script>
     <script type="text/javascript" src="libs/jQuery.js"></script>
     <link rel="stylesheet" type="text/css" href="assets/style.css">
     <script id="heightfield-vs" type="x-shader/x-vertex">#version 300 es
@@ -270,13 +271,13 @@
         var timerBonusAvion, timerBonusPikachu = null;
         var heightfield;
         var background;
-        var spaceship;
-        var ennemy;
+        var spaceship, ennemy;
         var shootSample;
         var timeNow ;
         var specialShoot = [];
         const speed = 0.15;
         var prece, preceEnnemy;
+        var utilsBonus = new BonusUtils();
 
         function drawScene() {
             // initialisation du viewport
@@ -451,33 +452,16 @@
         //#region bonus
             //bonus cadence de tir normal augmentée
             if (currentlyPressedKeys[65]) { //a
-                bonusLife(spaceship);
+                utilsBonus.increaseLife(spaceship);
             }
 
             if(currentlyPressedKeys[186]) {
-                bonusLife(ennemy);
+                utilsBonus.increaseLife(ennemy);
             }
         //#endregion bonus
 
         }
 
-        function bonusLife(player) {
-            const AUGMENTATION_PV = 10;
-            if(player != null){
-                if (player.pv === player.MAX_PV) {
-                    player.MAX_PV += AUGMENTATION_PV;
-                    player.pv = player.MAX_PV;
-
-                    if(player == ennemy){
-                        $("#lifePikachu").attr('max',player.MAX_PV).attr('value',player.MAX_PV);
-                    }else{
-                        $("#lifePlane").attr('max',player.MAX_PV).attr('value',player.MAX_PV);
-                    }
-                }else{
-                    player.pv = (player.pv+=AUGMENTATION_PV > player.MAX_PV) ? player.MAX_PV : player.pv += AUGMENTATION_PV;
-                }
-            }
-        }
 
         function bonusIncreaseNormalShoot(startTime){
             const endTime = startTime.getTime()+5000;
@@ -540,12 +524,13 @@
                     } else {
                         splatsArray.splice(splatsArray[splat], 1);
                         hit(ennemyTouch);
-                        console.log("Point de vie : " + ennemyTouch.pv);
+
                     }
                 } else {
 
                     splatsArray.splice(splatsArray[splat], 1);
                 }
+                refreshInterface();
             }
 
 
@@ -560,6 +545,7 @@
                         console.log("Point de vie : " + ennemyTouch.pv);
                     }
                 }
+                refreshInterface();
 
             }
 
@@ -575,6 +561,7 @@
                 } else {
                     specialShoot[i] = null;
                 }
+                refreshInterface();
             }
             lastTime = timeNow;
             specialShootsProgressBar();
@@ -589,6 +576,10 @@
             animate();
         }
 
+        function refreshInterface() {
+            $("#lifePikachu").attr('data-content',ennemy.pv);
+            $("#lifePlane").attr('data-content',spaceship.pv);
+        }
 
         var tabEnnemy = [];
 
@@ -654,7 +645,7 @@
     </div>
     <div class="life">
         <label for="lifePikachu">Vie Pikachu</label>
-        <progress id="lifePikachu" max="100" value="100"></progress>
+        <progress id="lifePikachu" data-content="100" max="100" value="100"></progress>
     </div>
 </div>
 
@@ -662,11 +653,11 @@
 <div class="infoPlayerPlane">
     <div class="specialShoot">
         <label for="specialShootPlane">Special shoot Avion</label>
-        <progress id="specialShootPlane" max="3500" value="3500"></progress>
+        <progress id="specialShootPlane" max="3500" value="3500">TEST</progress>
     </div>
     <div class="life">
         <label for="lifePlane">Vie Avion</label>
-        <progress id="lifePlane" max="100" value="100"></progress>
+        <progress id="lifePlane" data-content="100" max="100" value="100"></progress>
     </div>
 </div>
 
