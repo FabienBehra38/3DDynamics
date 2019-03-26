@@ -69,7 +69,7 @@ function Bonus(textureFileName) {
 
     this.loaded = true;
 
-    console.log("splat initialized");
+    console.log("Bonus initialized");
 }
 
 Bonus.prototype.shader = function() {
@@ -79,10 +79,8 @@ Bonus.prototype.shader = function() {
 Bonus.prototype.initParameters = function() {
     this.width = 0.05;
     this.height = 0.05;
-    this.position = [-1 ,0];
 
-    this.splatTexture = initTexture("assets/splat.png");
-    // we could init some params here
+    this.splatTexture = initTexture("assets/health.png");
 }
 
 Bonus.prototype.setPosition = function(x, y) {
@@ -91,19 +89,7 @@ Bonus.prototype.setPosition = function(x, y) {
 
 Bonus.prototype.setParameters = function(elapsed) {
     // we could animate something here
-    this.position[0] += 0.04;
-}
-
-Bonus.prototype.setSpecialParametersRight= function(elapsed) {
-    // we could animate something here
-    this.position[1] += 0.04;
     this.position[0] += 0.01;
-}
-
-Bonus.prototype.setSpecialParametersLeft= function(elapsed) {
-    // we could animate something here
-    this.position[1] += 0.04;
-    this.position[0] -= 0.01;
 }
 
 Bonus.prototype.sendUniformVariables = function() {
@@ -147,6 +133,10 @@ Bonus.prototype.clear = function() {
 Bonus.prototype.getPosX = function () {
     return this.position[1];
 };
+
+Bonus.prototype.getPosY = function () {
+    return this.position[0];
+}
 
 Bonus.prototype.getPos = function () {
     return this.position;

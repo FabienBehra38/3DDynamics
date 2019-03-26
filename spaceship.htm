@@ -264,6 +264,7 @@
         var fbo;
         var INTERVAL_SPECIAL_SHOOT = 3500;
         var INTERVAL_NORMAL_SHOOT = 500;
+        var INTERVAL_BONUS = 10000;
         const TIME_BONUS_NORMAL_SHOOT = 5000;
         var timeLastSpecialShoot = new Date().getTime() - INTERVAL_SPECIAL_SHOOT; //cherche pas
         var timeLastNormalShoot = new Date().getTime() - INTERVAL_NORMAL_SHOOT; //ça non plus
@@ -278,6 +279,8 @@
         const speed = 0.15;
         var prece, preceEnnemy;
         var utilsBonus = new BonusUtils();
+        var frequenceBonus = 10000;
+        var timeLastBonus = new Date().getTime() - INTERVAL_BONUS;
 
         function drawScene() {
             // initialisation du viewport
@@ -322,6 +325,10 @@
                     v.draw();
                 }
             });
+            $.each(bonusArray, function (k, v) {
+                v.sendUniformVariables();
+                v.draw();
+            })
             // on desactive la transparence
             gl.disable(gl.BLEND);
         }
@@ -329,6 +336,7 @@
         // une bonne maniere de gerer les evenements claviers
         var currentlyPressedKeys = {};
         var splatsArray = [];
+        var bonusArray = [];
 
         function handleKeyDown(event) {
             currentlyPressedKeys[event.keyCode] = true;
@@ -460,6 +468,14 @@
             }
         //#endregion bonus
 
+            if (currentlyPressedKeys[49]) { //1
+                // var position = Math.random() * (1 - -1) + -1;
+                // var newBonus = new Bonus(0);
+                // bonusArray.push(newBonus);
+                // newBonus.setPosition(-1,position);
+                // newBonus.setPosDebut(position);
+            }
+
         }
 
 
@@ -502,7 +518,7 @@
         }
 
         function hit(ennemy) {
-            ennemy.hitted()
+            ennemy.hitted();
             if (ennemy.testDead()) {
                 tabEnnemy.splice(tabEnnemy[ennemy], 1);
                 ennemy.clear();
@@ -563,6 +579,26 @@
                 }
                 refreshInterface();
             }
+
+
+
+            //Splat Bonus
+            for (const bonus in bonusArray) {
+                if (bonusArray[bonus].getPosY() < 1) {
+
+                    ennemyTouch = bonusArray[bonus].collision(tabEnnemy);
+                    if (ennemyTouch == null) {
+                        bonusArray[bonus].setParameters();
+                    } else {
+                        bonusArray.splice(bonusArray[bonus], 1);
+                        utilsBonus.increaseLife(ennemyTouch);
+                    }
+                } else {
+                    bonusArray.splice(bonusArray[bonus], 1);
+                }
+                refreshInterface();
+            }
+
             lastTime = timeNow;
             specialShootsProgressBar();
             lifesProgressBar();
@@ -570,6 +606,15 @@
 
 
         function tick() {
+            var temps = new Date().getTime();
+            if(temps - timeLastBonus >= INTERVAL_BONUS) {
+                var position = Math.random() * (1 - -1  ) + -1;
+                var newBonus = new Bonus(0);
+                bonusArray.push(newBonus);
+                newBonus.setPosition(-1,position);
+                newBonus.setPosDebut(position);
+                timeLastBonus = new Date().getTime();
+            }
             requestAnimFrame(tick);
             handleKeys();
             drawScene();
