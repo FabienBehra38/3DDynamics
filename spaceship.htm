@@ -10,6 +10,7 @@
     <script type="text/javascript" src="background.js"></script>
     <script type="text/javascript" src="modelObj.js"></script>
     <script type="text/javascript" src="splat.js"></script>
+    <script type="text/javascript" src="bonus.js"></script>
     <script type="text/javascript" src="libs/jQuery.js"></script>
     <link rel="stylesheet" type="text/css" href="assets/style.css">
     <script id="heightfield-vs" type="x-shader/x-vertex">#version 300 es
@@ -602,6 +603,7 @@
             initBackgroundShader();
             initModelShader();
             initSplatShader();
+            initBonusShader();
 
             heightfield = new Heightfield();
             background = new Background(fbo.texture(0));
@@ -616,7 +618,7 @@
             shootSample = new Splat(0, spaceship.getZ());
 
             // for(let i =0; i<specialShoot.length; i++){
-            //     specialShoot.push(new Splat(null, spaceship.getZ()));
+            //     specialShoot.push(new Bonus(null, spaceship.getZ()));
             // }
 
             // la couleur de fond sera noire
