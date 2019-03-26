@@ -462,10 +462,18 @@
             if (currentlyPressedKeys[65]) { //a
                 utilsBonus.increaseLife(spaceship);
             }
-
-            if(currentlyPressedKeys[186]) {
+            if(currentlyPressedKeys[186]) { //$
                 utilsBonus.increaseLife(ennemy);
             }
+
+            //bonus de resize des joueurs
+            if (currentlyPressedKeys[82]) { //r
+                utilsBonus.decreaseSize(spaceship);
+            }
+            if (currentlyPressedKeys[220]) { //*
+                utilsBonus.decreaseSize(ennemy);
+            }
+
         //#endregion bonus
 
             if (currentlyPressedKeys[49]) { //1

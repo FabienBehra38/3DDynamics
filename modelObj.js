@@ -192,6 +192,21 @@ Model.prototype.move = function (x, y) {
 
 }
 
+Model.prototype.resize = function (factor) {
+    //pour des raisons étrange, il diminiue de base par 10 donc on fait *10
+
+    if (this.ennemy) {
+        factor *= 100;
+        this.modelMatrix = mat4.scale(this.modelMatrix, [0.01*factor, 0.01*factor, 0.01*factor]);
+        console.log(this.modelMatrix);
+    } else {
+        factor *= 10;
+        this.modelMatrix = mat4.scale(this.modelMatrix, [0.1*factor, 0.1*factor, 0.1*factor]);
+        console.log(this.modelMatrix);
+    }
+
+}
+
 Model.prototype.translate = function (x, y, z) {
     this.translation = [x, y, z];
 }
