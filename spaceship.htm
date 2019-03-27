@@ -294,10 +294,12 @@
 
     <script type="text/javascript">
         var fbo;
-
         var INTERVAL_SPECIAL_SHOOT = 3500;
         var INTERVAL_NORMAL_SHOOT = 500;
         var INTERVAL_BONUS = 10000;
+
+        var PeakatimeLastSpecialShoot = new Date().getTime() - INTERVAL_SPECIAL_SHOOT; //cherche pas
+        var PeakatimeLastNormalShoot = new Date().getTime() - INTERVAL_NORMAL_SHOOT; //ça non plus
         var timeLastSpecialShoot = new Date().getTime() - INTERVAL_SPECIAL_SHOOT; //cherche pas
         var timeLastNormalShoot = new Date().getTime() - INTERVAL_NORMAL_SHOOT; //Ã§a non plus
         var heightfield,
@@ -309,6 +311,7 @@
             specialShoot = [];
         const speed = 0.15;
         var prece, preceEnnemy;
+        var SpaceShipTimeNow, PeakATimeNow;
         var utilsBonus = new BonusUtils();
         var frequenceBonus = 10000;
         var timeLastBonus = new Date().getTime() - INTERVAL_BONUS;
