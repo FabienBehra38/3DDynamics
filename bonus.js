@@ -78,8 +78,8 @@ Bonus.prototype.shader = function() {
 }
 
 Bonus.prototype.initParameters = function() {
-    this.width = 0.05;
-    this.height = 0.05;
+    this.width = 0.08;
+    this.height = 0.08;
 
     if (this.type === "vie") {
         this.splatTexture = initTexture("assets/health.png");
@@ -120,7 +120,7 @@ Bonus.prototype.draw = function() {
 Bonus.prototype.collision = function(tabEnnemy){
     for(var i = 0; i<tabEnnemy.length; i++){
         let pos = tabEnnemy[i].getBBox();
-        if (this.position[0]>pos[0][0] && this.position[0]<pos[1][0] &&  this.position[1]>pos[1][1]&& this.position[1]<pos[0][1]){
+        if (this.position[0]+this.width/2>pos[0][0] && this.position[0]-this.width/2<pos[1][0] &&  this.position[1]+this.width/2>pos[1][1]&& this.position[1]-this.width/2<pos[0][1]){
             return tabEnnemy[i];
         }
     }
