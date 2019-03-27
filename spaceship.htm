@@ -279,7 +279,8 @@
         var utilsBonus = new BonusUtils();
         var frequenceBonus = 10000;
         var timeLastBonus = new Date().getTime() - INTERVAL_BONUS;
-        var typesBonus = ["vie", "resize"];
+        var typesBonus = ["heal", "resize"];
+        var timeDecreaseSizePikachu = 0, timeDecreaseSizeSpaceship= 0;
 
         function drawScene() {
             // initialisation du viewport
@@ -555,10 +556,16 @@
                     if (ennemyTouch == null) {
                         bonusArray[bonus].setParameters();
                     } else {
-                        if (bonusArray[bonus].getType() === "vie") {
+                        if (bonusArray[bonus].getType() === "heal") {
                             utilsBonus.increaseLife(ennemyTouch);
                         } else if (bonusArray[bonus].getType() === "resize") {
                             utilsBonus.decreaseSize(ennemyTouch);
+                            if (ennemyTouch === spaceship) {
+                                timeDecreaseSizeSpaceship = new Date ().getTime();
+                            } else {
+                                timeDecreaseSizePikachu = new Date ().getTime();
+                            }
+
                         }
                         bonusArray.splice(bonusArray[bonus], 1);
 
@@ -567,6 +574,7 @@
                 } else {
                     bonusArray.splice(bonusArray[bonus], 1);
                 }
+                refreshInterface();
             }
 
             lastTime = timeNow;
@@ -600,7 +608,18 @@
                 .attr('data-content',spaceship.pv)
                 .val(spaceship.pv);
 
+            //Bonus spaceship
             $("#specialShootPlane").val(new Date().getTime() - timeLastSpecialShoot);
+
+            //Bonus pikacu
+            var typeBonus = "";
+            //Affiche TAILLE tant que le pikachu est sous resize
+            if (new Date().getTime() - timeDecreaseSizePikachu < 5000) {
+                typeBonus = "TAILLE -";
+            }
+            $("#bonusPikachu")
+                .attr('data-content', typeBonus)
+                .val(5000 - (new Date().getTime() - timeDecreaseSizePikachu));
         }
 
         var tabEnnemy = [];
@@ -659,6 +678,10 @@
         <label for="specialShootPikachu">Special shoot Pikachu</label>
         <progress id="specialShootPikachu" max="3500" value="3500"></progress>
     </div>
+    <div class="bonus">
+        <label for="bonusPikachu">Bonus Pikachu</label>
+        <progress data-html="true" id="bonusPikachu" max="5000" value="0"></progress>
+    </div>
     <div class="life">
         <label for="lifePikachu">Vie Pikachu</label>
         <progress id="lifePikachu" data-content="100" max="100" value="100"></progress>
@@ -670,6 +693,10 @@
     <div class="specialShoot">
         <label for="specialShootPlane">Special shoot Avion</label>
         <progress id="specialShootPlane" max="3500" value="3500">TEST</progress>
+    </div>
+    <div class="bonus">
+        <label for="bonusSpaceship">Bonus Spaceship</label>
+        <progress id="bonusSpaceship" max="5000" value="0"></progress>
     </div>
     <div class="life">
         <label for="lifePlane">Vie Avion</label>

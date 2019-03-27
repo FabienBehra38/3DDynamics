@@ -1,5 +1,4 @@
 var splatShader;
-var model;
 
 function initBonusShader() {
     splatShader = initShaders("splat-vs","splat-fs");
@@ -81,7 +80,7 @@ Bonus.prototype.initParameters = function() {
     this.width = 0.08;
     this.height = 0.08;
 
-    if (this.type === "vie") {
+    if (this.type === "heal") {
         this.splatTexture = initTexture("assets/health.png");
     } else if (this.type === "resize") {
         this.splatTexture = initTexture("assets/resize.png");
@@ -144,15 +143,9 @@ Bonus.prototype.getPosY = function () {
     return this.position[0];
 }
 
-Bonus.prototype.getPos = function () {
-    return this.position;
-};
 
 Bonus.prototype.setPosDebut = function (pos) {
     this.posDebut = pos
-};
-Bonus.prototype.getPosDebut = function () {
-    return this.posDebut;
 };
 
 Bonus.prototype.getType = function () {
