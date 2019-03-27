@@ -113,6 +113,8 @@ Model.prototype.shoot = function(){
 
         (this.ennemy) ? PeakatimeLastNormalShoot = new Date().getTime(): timeLastNormalShoot  = new Date().getTime();
     }
+
+    refreshInterface();
 };
 
 /**
@@ -179,7 +181,7 @@ Model.prototype.setParameters = function (elapsed) {
 Model.prototype.hitted = function () {
     this.pv -= 10;
 }
-Model.prototype.testDead = function () {
+Model.prototype.isDead = function () {
     return this.pv <= 0;
 }
 

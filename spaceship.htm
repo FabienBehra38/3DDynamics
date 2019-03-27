@@ -511,27 +511,27 @@
             lastTime = timeNow;
         }
 
+        /**
+         * touche l'ennemi en argument
+         * */
         function hit(ennemy) {
             ennemy.hitted();
-            if (ennemy.testDead()) {
+            if (ennemy.isDead()) {
                 tabEnnemy.splice(tabEnnemy[ennemy], 1);
                 ennemy.clear();
             }
         }
 
         function animateSplat() {
-
             let ennemyTouch;
-
             for (const splat in splatsArray) {
                 if (splatsArray[splat].getPosX() < 1 && splatsArray[splat].getPosX() > -1) {
                     ennemyTouch = splatsArray[splat].collision(tabEnnemy);
-                    if (ennemyTouch == null) {
+                    if (ennemyTouch == null) { // si pas de collision, le splat continue son déplacement
                         splatsArray[splat].setParameters();
                     } else {
                         splatsArray.splice(splatsArray[splat], 1);
                         hit(ennemyTouch);
-
                     }
                 } else {
 

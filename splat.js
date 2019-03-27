@@ -14,8 +14,8 @@ function initSplatShader() {
     console.log("splat shader initialized");
 }
 
-function Splat(textureFileName, deplacement = 'haut', appartient) {
-    this.appartient = appartient;
+function Splat(textureFileName, deplacement = 'haut', player) {
+    this.player = player;
     this.deplacement = deplacement;
     this.initParameters();
 
@@ -148,14 +148,26 @@ Splat.prototype.draw = function () {
     }
 };
 
-Splat.prototype.collision = function (tabEnnemy) {
-    for (var i = 0; i < tabEnnemy.length; i++) {
-        if (tabEnnemy[i] != this.appartient) {
-            // console.log(tabEnnemy[i].getBBox());
-            let pos = tabEnnemy[i].getBBox();
-            if (this.position[0] > pos[0][0] && this.position[0] < pos[1][0] && this.position[1] > pos[1][1] && this.position[1] < pos[0][1]) { //HitBox en 3D à changé !!!!!
-                return tabEnnemy[i];
+Splat.prototype.collision = function (tabPlayers) {
+    //[0] => pikachu
+    //[1] => spaceship
+    for (var i = 0; i < tabPlayers.length; i++) {
+        if (tabPlayers[i] != this.player) { // si le joueur courant n'est pas celui qui a tiré le splat
+            let pos = tabPlayers[i].getBBox();
+            if(this.player.ennemy){ // si c'est le pikachu
+                if (this.position[0] > pos[1][0] && this.position[0] < pos[0][0] // si splat[x] est compris en obj[xMin] et obj[xMax]
+                    && this.position[1] > pos[1][1] && this.position[1] < pos[0][1]) { //HitBox en 3D à changé !!!!!
+                    console.log("testEnnemy");
+                    return tabPlayers[i];
+                }
+            }else{
+                if (this.position[0] > pos[0][0] && this.position[0] < pos[1][0] // si splat[x] est compris en obj[xMin] et obj[xMax]
+                    && this.position[1] > pos[1][1] && this.position[1] < pos[0][1]) { //HitBox en 3D à changé !!!!!
+                    console.log("test")
+                    return tabPlayers[i];
+                }
             }
+
         }
     }
 
