@@ -281,6 +281,7 @@
         var utilsBonus = new BonusUtils();
         var frequenceBonus = 10000;
         var timeLastBonus = new Date().getTime() - INTERVAL_BONUS;
+        var typesBonus = ["vie", "resize"];
 
         function drawScene() {
             // initialisation du viewport
@@ -598,8 +599,14 @@
                     if (ennemyTouch == null) {
                         bonusArray[bonus].setParameters();
                     } else {
+                        if (bonusArray[bonus].getType() === "vie") {
+                            utilsBonus.increaseLife(ennemyTouch);
+                        } else if (bonusArray[bonus].getType() === "resize") {
+                            utilsBonus.decreaseSize(ennemyTouch);
+                        }
                         bonusArray.splice(bonusArray[bonus], 1);
-                        utilsBonus.increaseLife(ennemyTouch);
+
+
                     }
                 } else {
                     bonusArray.splice(bonusArray[bonus], 1);
@@ -617,7 +624,8 @@
             var temps = new Date().getTime();
             if(temps - timeLastBonus >= INTERVAL_BONUS) {
                 var position = Math.random() * (1 - -1  ) + -1;
-                var newBonus = new Bonus(0);
+                var type = typesBonus[Math.floor(Math.random()*typesBonus.length)];
+                var newBonus = new Bonus(type);
                 bonusArray.push(newBonus);
                 newBonus.setPosition(-1,position);
                 newBonus.setPosDebut(position);
