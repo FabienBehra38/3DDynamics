@@ -14,7 +14,8 @@ function initBonusShader() {
     console.log("splat shader initialized");
 }
 
-function Bonus(textureFileName) {
+function Bonus(type) {
+    this.type = type;
     this.initParameters();
 
     var wo2 = 0.5*this.width;
@@ -80,7 +81,12 @@ Bonus.prototype.initParameters = function() {
     this.width = 0.05;
     this.height = 0.05;
 
-    this.splatTexture = initTexture("assets/health.png");
+    if (this.type === "vie") {
+        this.splatTexture = initTexture("assets/health.png");
+    } else if (this.type === "resize") {
+        this.splatTexture = initTexture("assets/resize.png");
+    }
+
 }
 
 Bonus.prototype.setPosition = function(x, y) {
@@ -148,3 +154,7 @@ Bonus.prototype.setPosDebut = function (pos) {
 Bonus.prototype.getPosDebut = function () {
     return this.posDebut;
 };
+
+Bonus.prototype.getType = function () {
+    return this.type;
+}
