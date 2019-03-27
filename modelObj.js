@@ -95,6 +95,50 @@ Model.prototype.handleLoadedObject = function (objData) {
     this.loaded = true;
 }
 
+/**
+ * Déclenche un tir normal
+ */
+Model.prototype.shoot = function(){
+    const time = new Date().getTime();
+    const interval = (this.ennemy) ? INTERVAL_NORMAL_SHOOT_PIKACHU : INTERVAL_NORMAL_SHOOT_SPACESHIP;
+    let timeLastShoot = (this.ennemy) ? PeakatimeLastNormalShoot : timeLastNormalShoot;
+    if(time-timeLastShoot > interval){
+        var splat = (this.ennemy)
+                        ? new Splat(0, 'bas', this)
+                        : new Splat(0, 'haut', this);
+
+        splatsArray.push(splat);
+        const frontObj = this.getBBox();
+        splat.setPosition((frontObj[0][0] + frontObj[1][0]) / 2, frontObj[0][1]);
+        splat.setPosDebut(frontObj[0][1]);
+
+        (this.ennemy) ? PeakatimeLastNormalShoot = new Date().getTime(): timeLastNormalShoot  = new Date().getTime();
+    }
+};
+
+/**
+ * Déclenche un tir spécial
+ */
+Model.prototype.shootSpecial = function() {
+    const time = new Date().getTime();
+    const interval = (this.ennemy) ? INTERVAL_SPECIAL_SHOOT_PIKACHU : INTERVAL_SPECIAL_SHOOT_SPACESHIP
+    let lastSpecialShoot = (this.ennemy) ? PeakatimeLastSpecialShoot : timeLastSpecialShoot;
+
+    if(time - lastSpecialShoot >= interval){
+        specialShoot = (this.ennemy)
+            ? [new Splat(0, 'bas', this), new Splat(0, 'basG', this), new Splat(0, 'basD', this)]
+            : [new Splat(0, 'haut', this), new Splat(0, 'hautG', this), new Splat(0, 'hautD', this)];
+
+        const frontObj = this.getBBox();
+        for (let i = 0; i < specialShoot.length; i++) {
+            specialShoot[i].setPosition((frontObj[0][0] + frontObj[1][0]) / 2, frontObj[0][1]);
+            specialShoot[i].setPosDebut(frontObj[0][1]);
+        }
+    }
+
+    (this.ennemy) ? PeakatimeLastSpecialShoot = new Date().getTime(): timeLastSpecialShoot  = new Date().getTime();
+};
+
 
 Model.prototype.initParameters = function () {
     this.setInclinaison(0, 0);

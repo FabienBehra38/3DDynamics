@@ -284,19 +284,18 @@
 	  outColor = texture(uTex, vTextureCoord);
       }
 
-
-
-
-
-
-
     </script>
 
     <script type="text/javascript">
         var fbo;
-        var INTERVAL_SPECIAL_SHOOT = 3500;
-        var INTERVAL_NORMAL_SHOOT = 500;
-        var INTERVAL_BONUS = 10000;
+        const INTERVAL_SPECIAL_SHOOT = 3500;
+        const INTERVAL_NORMAL_SHOOT = 500;
+        const INTERVAL_BONUS = 10000;
+
+        var INTERVAL_SPECIAL_SHOOT_PIKACHU = INTERVAL_SPECIAL_SHOOT;
+        var INTERVAL_SPECIAL_SHOOT_SPACESHIP = INTERVAL_SPECIAL_SHOOT;
+        var INTERVAL_NORMAL_SHOOT_PIKACHU = INTERVAL_NORMAL_SHOOT_PIKACHU;
+        var INTERVAL_NORMAL_SHOOT_SPACESHIP = INTERVAL_NORMAL_SHOOT;
 
         var PeakatimeLastSpecialShoot = new Date().getTime() - INTERVAL_SPECIAL_SHOOT; //cherche pas
         var PeakatimeLastNormalShoot = new Date().getTime() - INTERVAL_NORMAL_SHOOT; //ça non plus
@@ -461,67 +460,19 @@
             }
 
             if (currentlyPressedKeys[32]) { // SPACE
-
-                timeNow = new Date().getTime();
-                if (timeNow-timeLastNormalShoot >= INTERVAL_NORMAL_SHOOT) {
-                    // just to test how a aplat works
-                    var newSplat = new Splat(0, 'haut', spaceship);
-                    splatsArray.push(newSplat);
-                    var frontShip = spaceship.getBBox();
-                    newSplat.setPosition((frontShip[0][0] + frontShip[1][0]) / 2, frontShip[0][1]);
-                    newSplat.setPosDebut(frontShip[0][1]);
-
-                    timeLastNormalShoot = new Date().getTime();
-                }
+                spaceship.shoot();
             }
 
             if (currentlyPressedKeys[13]) { // ENTER
-                PeakATimeNow = new Date().getTime();
-                if (PeakATimeNow - PeakatimeLastNormalShoot >= 500) {
-                    // just to test how a aplat works
-                    var newSplat = new Splat(0, 'bas', ennemy);
-                    splatsArray.push(newSplat);
-                    var frontPeaka = ennemy.getBBox();
-                    newSplat.setPosition((frontPeaka[0][0] + frontPeaka[1][0]) / 2, frontPeaka[0][1]);
-                    newSplat.setPosDebut(frontPeaka[0][1]);
-
-                    PeakatimeLastNormalShoot = new Date().getTime();
-                }
+                ennemy.shoot();
             }
 
             if (currentlyPressedKeys[50]) { // é
-                SpaceShipTimeNow = new Date().getTime();
-                //un tir spécial toutes les 1200 ms
-                if (SpaceShipTimeNow - timeLastSpecialShoot >= 3500) {
-                    specialShoot = [new Splat(0, 'haut', spaceship), new Splat(0, 'hautG', spaceship), new Splat(0, 'hautD', spaceship)]; // on refait le tableau de splat
-
-
-                    //Pour chaque splat, on définition l'orgine comme étant le nez de l'avion
-                    const frontShip = spaceship.getBBox();
-                    for (let i = 0; i < specialShoot.length; i++) {
-                        specialShoot[i].setPosition((frontShip[0][0] + frontShip[1][0]) / 2, frontShip[0][1]);
-                        specialShoot[i].setPosDebut(frontShip[0][1]);
-                    }
-                    //On enregistre le temps du dernier tir
-                    timeLastSpecialShoot = new Date().getTime();
-                }
+                spaceship.shootSpecial();
             }
 
             if (currentlyPressedKeys[8]) { // effacer
-                PeakATimeNow = new Date().getTime();
-                //un tir spécial toutes les 1200 ms
-                if (PeakATimeNow - PeakatimeLastSpecialShoot >= 3500) {
-                    specialShoot = [new Splat(0, 'bas', ennemy), new Splat(0, 'basG', ennemy), new Splat(0, 'basD', ennemy)]; // on refait le tableau de splat
-
-                    //Pour chaque splat, on définition l'orgine comme étant le nez de l'avion
-                    const frontPeaka = ennemy.getBBox();
-                    for (let i = 0; i < specialShoot.length; i++) {
-                        specialShoot[i].setPosition((frontPeaka[0][0] + frontPeaka[1][0]) / 2, frontPeaka[0][1]);
-                        specialShoot[i].setPosDebut(frontPeaka[0][1]);
-                    }
-                    //On enregistre le temps du dernier tir
-                    PeakatimeLastSpecialShoot = new Date().getTime();
-                }
+                ennemy.shootSpecial();
             }
 
         }
