@@ -1,0 +1,78 @@
+.infoPlayerPikachu {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 800px;
+    padding: 0 0 1% 0;
+}
+
+.infoPlayerPlane {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 800px;
+    padding: 1% 0 0 0;
+}
+
+.specialShoot, .life{
+    display: flex;
+    flex-direction: column;
+    flex-basis: 40%;
+}
+
+.life {
+    text-align: right;
+}
+
+.life progress::-moz-progress-bar,
+.life progress::-webkit-progress-value{
+    background: tomato;
+    border: none !important;
+    border-radius: 25px;
+}
+
+.specialShoot progress::-moz-progress-bar,
+.life progress::-webkit-progress-value{
+    background: forestgreen;
+    border: none !important;
+    border-radius: 25px;
+}
+
+.life progress::-webkit-progress-bar {
+    background: grey;
+    border: none;
+}
+
+
+.life progress::after {
+    content: attr(data-content) "";
+    position: absolute;
+    left: 50%;
+    top: 0;
+    transform: translateX(-50%);
+    color: white;
+    font-weight: bold;
+}
+
+progress {
+    border: 0;
+    height: 20px;
+    border-radius: 20px;
+    width: 100%;
+    position: relative;
+}
+progress::-webkit-progress-bar {
+    border: 0;
+    height: 20px;
+    border-radius: 20px;
+}
+progress::-webkit-progress-value {
+    border: 0;
+    height: 20px;
+    border-radius: 20px;
+}
+progress::-moz-progress-bar {
+    border: 0;
+    height: 20px;
+    border-radius: 20px;
+}

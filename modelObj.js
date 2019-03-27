@@ -111,7 +111,11 @@ Model.prototype.initParameters = function () {
         this.rotation = 0;
     }
     // this.rotation = 0;
-    this.pv = 100;
+    //set parameters player
+    this.MAX_PV = 100;
+    this.pv = this.MAX_PV;
+    this.intervalNormalShoot = INTERVAL_NORMAL_SHOOT;
+    this.intervalSpecialShoot = INTERVAL_SPECIAL_SHOOT;
 
     // trouver les model/view/proj matrices pour voir l'objet comme vous le souhaitez
     if (this.ennemy) {
@@ -187,6 +191,21 @@ Model.prototype.move = function (x, y) {
                 this.translate(this.translation[0] - x, 0, this.translation[2]);
             }
         }
+    }
+
+}
+
+Model.prototype.resize = function (factor) {
+    //pour des raisons étrange, il diminiue de base par 10 donc on fait *10
+
+    if (this.ennemy) {
+        factor *= 100;
+        this.modelMatrix = mat4.scale(this.modelMatrix, [0.01*factor, 0.01*factor, 0.01*factor]);
+        console.log(this.modelMatrix);
+    } else {
+        factor *= 10;
+        this.modelMatrix = mat4.scale(this.modelMatrix, [0.1*factor, 0.1*factor, 0.1*factor]);
+        console.log(this.modelMatrix);
     }
 
 }

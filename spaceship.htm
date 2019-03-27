@@ -10,8 +10,10 @@
     <script type="text/javascript" src="background.js"></script>
     <script type="text/javascript" src="modelObj.js"></script>
     <script type="text/javascript" src="splat.js"></script>
+    <script type="text/javascript" src="bonus.js"></script>
+    <script type="text/javascript" src="bonus-utils.js"></script>
     <script type="text/javascript" src="libs/jQuery.js"></script>
-
+    <link rel="stylesheet" type="text/css" href="assets/style.css">
     <script id="heightfield-vs" type="x-shader/x-vertex">#version 300 es
       // *** le vertex shader ***
       layout(location=0) in vec3 aVertexPosition; // la position du sommet 
@@ -292,19 +294,25 @@
 
     <script type="text/javascript">
         var fbo;
-        var PeakatimeLastSpecialShoot = new Date().getTime() - 3500; //cherche pas
-        var PeakatimeLastNormalShoot = new Date().getTime() - 500; //ça non plus
-        var timeLastSpecialShoot = new Date().getTime() - 3500; //cherche pas
-        var timeLastNormalShoot = new Date().getTime() - 500; //ça non plus
-        var heightfield;
-        var background;
-        var spaceship;
-        var ennemy;
-        var shootSample;
-        var SpaceShipTimeNow, PeakATimeNow;
-        var specialShoot = [];
+
+        var INTERVAL_SPECIAL_SHOOT = 3500;
+        var INTERVAL_NORMAL_SHOOT = 500;
+        var INTERVAL_BONUS = 10000;
+        var timeLastSpecialShoot = new Date().getTime() - INTERVAL_SPECIAL_SHOOT; //cherche pas
+        var timeLastNormalShoot = new Date().getTime() - INTERVAL_NORMAL_SHOOT; //Ã§a non plus
+        var heightfield,
+            background,
+            spaceship,
+            ennemy,
+            shootSample,
+            timeNow,
+            specialShoot = [];
         const speed = 0.15;
         var prece, preceEnnemy;
+        var utilsBonus = new BonusUtils();
+        var frequenceBonus = 10000;
+        var timeLastBonus = new Date().getTime() - INTERVAL_BONUS;
+        var typesBonus = ["vie", "resize"];
 
         function drawScene() {
             // initialisation du viewport
@@ -349,6 +357,10 @@
                     v.draw();
                 }
             });
+            $.each(bonusArray, function (k, v) {
+                v.sendUniformVariables();
+                v.draw();
+            })
             // on desactive la transparence
             gl.disable(gl.BLEND);
         }
@@ -356,11 +368,11 @@
         // une bonne maniere de gerer les evenements claviers
         var currentlyPressedKeys = {};
         var splatsArray = [];
+        var bonusArray = [];
 
         function handleKeyDown(event) {
             currentlyPressedKeys[event.keyCode] = true;
         }
-
 
         function handleKeyUp(event) {
             currentlyPressedKeys[event.keyCode] = false;
@@ -446,8 +458,9 @@
             }
 
             if (currentlyPressedKeys[32]) { // SPACE
-                SpaceShipTimeNow = new Date().getTime();
-                if (SpaceShipTimeNow - timeLastNormalShoot >= 500) {
+
+                timeNow = new Date().getTime();
+                if (timeNow-timeLastNormalShoot >= INTERVAL_NORMAL_SHOOT) {
                     // just to test how a aplat works
                     var newSplat = new Splat(0, 'haut', spaceship);
                     splatsArray.push(newSplat);
@@ -479,6 +492,7 @@
                 if (SpaceShipTimeNow - timeLastSpecialShoot >= 3500) {
                     specialShoot = [new Splat(0, 'haut', spaceship), new Splat(0, 'hautG', spaceship), new Splat(0, 'hautD', spaceship)]; // on refait le tableau de splat
 
+
                     //Pour chaque splat, on définition l'orgine comme étant le nez de l'avion
                     const frontShip = spaceship.getBBox();
                     for (let i = 0; i < specialShoot.length; i++) {
@@ -509,10 +523,16 @@
 
         }
 
-        function CestLeTrucQuiAfficheLesBarresDeProgressionPourLeTempsEntreLesSpecialShoots() {
-            $("#specialShootPlane").val(new Date().getTime() - timeLastSpecialShoot);
-            $("#specialShootPikachu").val(new Date().getTime() - PeakatimeLastSpecialShoot);
-        }
+        //#region bonus
+            //bonus cadence de tir normal augmentÃ©e
+            if (currentlyPressedKeys[65]) { //a
+                utilsBonus.reduceLoadingSpecialShoot(spaceship);
+            }
+            if(currentlyPressedKeys[186]) { //$
+                utilsBonus.reduceLoadingSpecialShoot(ennemy);
+            }
+
+        //#endregion bonus
 
         // animation
         var lastTime = 0;
@@ -530,18 +550,15 @@
                 animateSplat()
             }
             lastTime = timeNow;
-            CestLeTrucQuiAfficheLesBarresDeProgressionPourLeTempsEntreLesSpecialShoots();
         }
 
         function hit(ennemy) {
-            ennemy.hitted()
+            ennemy.hitted();
             if (ennemy.testDead()) {
                 tabEnnemy.splice(tabEnnemy[ennemy], 1);
                 ennemy.clear();
             }
-
         }
-
 
         function animateSplat() {
 
@@ -555,12 +572,13 @@
                     } else {
                         splatsArray.splice(splatsArray[splat], 1);
                         hit(ennemyTouch);
-                        console.log("Point de vie : " + ennemyTouch.pv);
+
                     }
                 } else {
 
                     splatsArray.splice(splatsArray[splat], 1);
                 }
+                refreshInterface();
             }
 
 
@@ -575,6 +593,7 @@
                         console.log("Point de vie : " + ennemyTouch.pv);
                     }
                 }
+                refreshInterface();
 
             }
 
@@ -584,17 +603,64 @@
                 } else {
                     specialShoot[i] = null;
                 }
+                refreshInterface();
             }
+
+            //Splat Bonus
+            for (const bonus in bonusArray) {
+                if (bonusArray[bonus].getPosY() < 1) {
+
+                    ennemyTouch = bonusArray[bonus].collision(tabEnnemy);
+                    if (ennemyTouch == null) {
+                        bonusArray[bonus].setParameters();
+                    } else {
+                        if (bonusArray[bonus].getType() === "vie") {
+                            utilsBonus.increaseLife(ennemyTouch);
+                        } else if (bonusArray[bonus].getType() === "resize") {
+                            utilsBonus.decreaseSize(ennemyTouch);
+                        }
+                        bonusArray.splice(bonusArray[bonus], 1);
+
+
+                    }
+                } else {
+                    bonusArray.splice(bonusArray[bonus], 1);
+                }
+            }
+
+            lastTime = timeNow;
+            refreshInterface();
         }
 
-
         function tick() {
+            var temps = new Date().getTime();
+            if(temps - timeLastBonus >= INTERVAL_BONUS) {
+                var position = Math.random() * (1 - -1  ) + -1;
+                position = 0.5; //REMOVE
+                var type = typesBonus[Math.floor(Math.random()*typesBonus.length)];
+                var newBonus = new Bonus(type);
+                bonusArray.push(newBonus);
+                newBonus.setPosition(-1,position);
+                newBonus.setPosDebut(position);
+                timeLastBonus = new Date().getTime();
+            }
             requestAnimFrame(tick);
             handleKeys();
             drawScene();
             animate();
         }
 
+        function refreshInterface() {
+            $("#lifePikachu")
+                .attr('data-content',ennemy.pv)
+                .val(ennemy.pv);
+
+            $("#lifePlane")
+                .attr('data-content',spaceship.pv)
+                .val(spaceship.pv);
+
+            $("#specialShootPlane").val(new Date().getTime() - timeLastSpecialShoot);
+        }
 
         var tabEnnemy = [];
 
@@ -609,6 +675,7 @@
             initBackgroundShader();
             initModelShader();
             initSplatShader();
+            initBonusShader();
 
             heightfield = new Heightfield();
             background = new Background(fbo.texture(0));
@@ -621,10 +688,6 @@
 
             // ennemy.setScale();
             shootSample = new Splat(0, spaceship.getZ());
-
-            // for(let i =0; i<specialShoot.length; i++){
-            //     specialShoot.push(new Splat(null, spaceship.getZ()));
-            // }
 
             // la couleur de fond sera noire
             gl.clearColor(0.0, 0.0, 0.0, 1.0);
@@ -643,8 +706,6 @@
             // dessine la scene
             tick();
         }
-
-
     </script>
 
 
@@ -652,13 +713,28 @@
 
 
 <body onload="webGLStart();">
-<canvas id="SpaceShip" style="border: none;" width="800" height="800"></canvas>
-<div class="infoPlayers">
-    <label for="specialShootPlane">Special shoot Avion</label>
-    <progress id="specialShootPlane" max="3500" value="3500"></progress>
-
-    <label for="specialShootPikachu">Special shoot Peakachoux</label>
-    <progress id="specialShootPikachu" max="3500" value="3500"></progress>
+<div class="infoPlayerPikachu">
+    <div class="specialShoot">
+        <label for="specialShootPikachu">Special shoot Pikachu</label>
+        <progress id="specialShootPikachu" max="3500" value="3500"></progress>
+    </div>
+    <div class="life">
+        <label for="lifePikachu">Vie Pikachu</label>
+        <progress id="lifePikachu" data-content="100" max="100" value="100"></progress>
+    </div>
 </div>
+
+<canvas id="SpaceShip" style="border: none;" width="800" height="800"></canvas>
+<div class="infoPlayerPlane">
+    <div class="specialShoot">
+        <label for="specialShootPlane">Special shoot Avion</label>
+        <progress id="specialShootPlane" max="3500" value="3500">TEST</progress>
+    </div>
+    <div class="life">
+        <label for="lifePlane">Vie Avion</label>
+        <progress id="lifePlane" data-content="100" max="100" value="100"></progress>
+    </div>
+</div>
+
 </body>
 </html>
