@@ -111,8 +111,11 @@ Model.prototype.initParameters = function () {
         this.rotation = 0;
     }
     // this.rotation = 0;
+    //set parameters player
     this.MAX_PV = 100;
     this.pv = this.MAX_PV;
+    this.intervalNormalShoot = INTERVAL_NORMAL_SHOOT;
+    this.intervalSpecialShoot = INTERVAL_SPECIAL_SHOOT;
 
     // trouver les model/view/proj matrices pour voir l'objet comme vous le souhaitez
     if (this.ennemy) {
