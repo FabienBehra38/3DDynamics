@@ -265,17 +265,15 @@
         var INTERVAL_SPECIAL_SHOOT = 3500;
         var INTERVAL_NORMAL_SHOOT = 500;
         var INTERVAL_BONUS = 10000;
-        const TIME_BONUS_NORMAL_SHOOT = 5000;
         var timeLastSpecialShoot = new Date().getTime() - INTERVAL_SPECIAL_SHOOT; //cherche pas
         var timeLastNormalShoot = new Date().getTime() - INTERVAL_NORMAL_SHOOT; //ça non plus
-        var isBonusNormalShootAvion, isBonusNormalShootPikachu = false;
-        var timerBonusAvion, timerBonusPikachu = null;
-        var heightfield;
-        var background;
-        var spaceship, ennemy;
-        var shootSample;
-        var timeNow ;
-        var specialShoot = [];
+        var heightfield,
+            background,
+            spaceship,
+            ennemy,
+            shootSample,
+            timeNow,
+            specialShoot = [];
         const speed = 0.15;
         var prece, preceEnnemy;
         var utilsBonus = new BonusUtils();
@@ -342,7 +340,6 @@
         function handleKeyDown(event) {
             currentlyPressedKeys[event.keyCode] = true;
         }
-
 
         function handleKeyUp(event) {
             currentlyPressedKeys[event.keyCode] = false;
@@ -461,52 +458,13 @@
         //#region bonus
             //bonus cadence de tir normal augmentée
             if (currentlyPressedKeys[65]) { //a
-                utilsBonus.increaseLife(spaceship);
+                utilsBonus.reduceLoadingSpecialShoot(spaceship);
             }
             if(currentlyPressedKeys[186]) { //$
-                utilsBonus.increaseLife(ennemy);
-            }
-
-            //bonus de resize des joueurs
-            if (currentlyPressedKeys[82]) { //r
-                utilsBonus.decreaseSize(spaceship);
-            }
-            if (currentlyPressedKeys[220]) { //*
-                utilsBonus.decreaseSize(ennemy);
+                utilsBonus.reduceLoadingSpecialShoot(ennemy);
             }
 
         //#endregion bonus
-
-            if (currentlyPressedKeys[49]) { //1
-                // var position = Math.random() * (1 - -1) + -1;
-                // var newBonus = new Bonus(0);
-                // bonusArray.push(newBonus);
-                // newBonus.setPosition(-1,position);
-                // newBonus.setPosDebut(position);
-            }
-
-        }
-
-
-        function bonusIncreaseNormalShoot(startTime){
-            const endTime = startTime.getTime()+5000;
-
-            while(endTime > startTime){
-                INTERVAL_NORMAL_SHOOT = 250;
-                startTime = new Date();
-            }
-
-            INTERVAL_NORMAL_SHOOT = 500;
-        }
-
-        function specialShootsProgressBar() {
-            $("#specialShootPlane").val(new Date().getTime() - timeLastSpecialShoot);
-            //$("#specialShootPikachu").val(new Date().getTime() - timeLastSpecialShoot); => pour le pikachu
-        }
-
-        function lifesProgressBar() {
-            $("#lifePikachu").val(ennemy.pv);
-            $("#lifePlane").val(spaceship.pv);
         }
 
         // animation
@@ -532,9 +490,7 @@
                 tabEnnemy.splice(tabEnnemy[ennemy], 1);
                 ennemy.clear();
             }
-
         }
-
 
         function animateSplat() {
 
@@ -611,19 +567,17 @@
                 } else {
                     bonusArray.splice(bonusArray[bonus], 1);
                 }
-                refreshInterface();
             }
 
             lastTime = timeNow;
-            specialShootsProgressBar();
-            lifesProgressBar();
+            refreshInterface();
         }
-
 
         function tick() {
             var temps = new Date().getTime();
             if(temps - timeLastBonus >= INTERVAL_BONUS) {
                 var position = Math.random() * (1 - -1  ) + -1;
+                position = 0.5; //REMOVE
                 var type = typesBonus[Math.floor(Math.random()*typesBonus.length)];
                 var newBonus = new Bonus(type);
                 bonusArray.push(newBonus);
@@ -638,8 +592,15 @@
         }
 
         function refreshInterface() {
-            $("#lifePikachu").attr('data-content',ennemy.pv);
-            $("#lifePlane").attr('data-content',spaceship.pv);
+            $("#lifePikachu")
+                .attr('data-content',ennemy.pv)
+                .val(ennemy.pv);
+
+            $("#lifePlane")
+                .attr('data-content',spaceship.pv)
+                .val(spaceship.pv);
+
+            $("#specialShootPlane").val(new Date().getTime() - timeLastSpecialShoot);
         }
 
         var tabEnnemy = [];
@@ -669,10 +630,6 @@
             // ennemy.setScale();
             shootSample = new Splat(0, spaceship.getZ());
 
-            // for(let i =0; i<specialShoot.length; i++){
-            //     specialShoot.push(new Bonus(null, spaceship.getZ()));
-            // }
-
             // la couleur de fond sera noire
             gl.clearColor(0.0, 0.0, 0.0, 1.0);
 
@@ -690,8 +647,6 @@
             // dessine la scene
             tick();
         }
-
-
     </script>
 
 

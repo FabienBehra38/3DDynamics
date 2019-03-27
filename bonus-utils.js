@@ -1,9 +1,16 @@
-function BonusUtils () {
+const TIME_BONUS = 5000;
+const AUGMENTATION_PV = 10;
+const INTERVAL_SPECIAL = 1500;
+const INTERVAL_NORMAL = 250;
 
-}
 
+function BonusUtils () {}
+
+/**
+ * Augmente la vie du player en argument
+ * @param player
+ */
 BonusUtils.prototype.increaseLife = function (player) {
-    const AUGMENTATION_PV = 10;
     if(player != null){
         console.log("pv : "+player.pv+ " && MAX : "+player.MAX_PV);
         if (player.pv === player.MAX_PV) {
@@ -22,11 +29,10 @@ BonusUtils.prototype.increaseLife = function (player) {
 };
 
 /**
- *
+ * Diminue la taille du player en argument
  * @param {Model} player
  */
 BonusUtils.prototype.decreaseSize = function (player) {
-    const TIME_BONUS = 5000; // 5sec
     const factorDicrease = 0.65;
     const factorIncrease = 1/factorDicrease;
     if( player != null ){
@@ -36,3 +42,25 @@ BonusUtils.prototype.decreaseSize = function (player) {
         }, TIME_BONUS);
     }
 };
+
+BonusUtils.prototype.reduceLoadingSpecialShoot = function (player) {
+
+    if( player != null ){
+        player.intervalSpecialShoot = INTERVAL_SPECIAL;
+        setTimeout(function () {
+            player.intervalSpecialShoot = INTERVAL_SPECIAL_SHOOT;
+        }, TIME_BONUS);
+    }
+};
+
+BonusUtils.prototype.reduceLoadingNormalShoot = function (player) {
+
+    if( player != null ){
+        player.intervalSpecialShoot = INTERVAL_NORMAL;
+        setTimeout(function () {
+            player.intervalSpecialShoot = INTERVAL_SPECIAL_SHOOT;
+        }, TIME_BONUS);
+    }
+};
+
+
