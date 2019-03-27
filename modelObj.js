@@ -100,9 +100,8 @@ Model.prototype.handleLoadedObject = function (objData) {
  */
 Model.prototype.shoot = function(){
     const time = new Date().getTime();
-    const interval = (this.ennemy) ? INTERVAL_NORMAL_SHOOT_PIKACHU : INTERVAL_NORMAL_SHOOT_SPACESHIP;
     let timeLastShoot = (this.ennemy) ? PeakatimeLastNormalShoot : timeLastNormalShoot;
-    if(time-timeLastShoot > interval){
+    if(time-timeLastShoot > this.intervalNormalShoot){
         var splat = (this.ennemy)
                         ? new Splat(0, 'bas', this)
                         : new Splat(0, 'haut', this);
@@ -121,10 +120,9 @@ Model.prototype.shoot = function(){
  */
 Model.prototype.shootSpecial = function() {
     const time = new Date().getTime();
-    const interval = (this.ennemy) ? INTERVAL_SPECIAL_SHOOT_PIKACHU : INTERVAL_SPECIAL_SHOOT_SPACESHIP
     let lastSpecialShoot = (this.ennemy) ? PeakatimeLastSpecialShoot : timeLastSpecialShoot;
 
-    if(time - lastSpecialShoot >= interval){
+    if(time - lastSpecialShoot >= this.intervalSpecialShoot){
         specialShoot = (this.ennemy)
             ? [new Splat(0, 'bas', this), new Splat(0, 'basG', this), new Splat(0, 'basD', this)]
             : [new Splat(0, 'haut', this), new Splat(0, 'hautG', this), new Splat(0, 'hautD', this)];
@@ -134,9 +132,11 @@ Model.prototype.shootSpecial = function() {
             specialShoot[i].setPosition((frontObj[0][0] + frontObj[1][0]) / 2, frontObj[0][1]);
             specialShoot[i].setPosDebut(frontObj[0][1]);
         }
+
+        (this.ennemy) ? PeakatimeLastSpecialShoot = new Date().getTime(): timeLastSpecialShoot  = new Date().getTime();
     }
 
-    (this.ennemy) ? PeakatimeLastSpecialShoot = new Date().getTime(): timeLastSpecialShoot  = new Date().getTime();
+    refreshInterface();
 };
 
 

@@ -43,6 +43,10 @@ BonusUtils.prototype.decreaseSize = function (player) {
     }
 };
 
+/**
+ * Reduis le chargement entre chaque tir spécial
+ * @param player
+ */
 BonusUtils.prototype.reduceLoadingSpecialShoot = function (player) {
 
     if( player != null ){
@@ -53,12 +57,16 @@ BonusUtils.prototype.reduceLoadingSpecialShoot = function (player) {
     }
 };
 
+/**
+ * Réduis le chargement entre chaque tir normal
+ * @param player
+ */
 BonusUtils.prototype.reduceLoadingNormalShoot = function (player) {
 
     if( player != null ){
-        player.intervalSpecialShoot = INTERVAL_NORMAL;
+        player.intervalNormalShoot = INTERVAL_NORMAL;
         setTimeout(function () {
-            player.intervalSpecialShoot = INTERVAL_SPECIAL_SHOOT;
+            player.intervalNormalShoot = INTERVAL_NORMAL_SHOOT;
         }, TIME_BONUS);
     }
 };

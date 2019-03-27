@@ -151,7 +151,7 @@ Splat.prototype.draw = function () {
 Splat.prototype.collision = function (tabEnnemy) {
     for (var i = 0; i < tabEnnemy.length; i++) {
         if (tabEnnemy[i] != this.appartient) {
-            console.log(tabEnnemy[i].getBBox());
+            // console.log(tabEnnemy[i].getBBox());
             let pos = tabEnnemy[i].getBBox();
             if (this.position[0] > pos[0][0] && this.position[0] < pos[1][0] && this.position[1] > pos[1][1] && this.position[1] < pos[0][1]) { //HitBox en 3D à changé !!!!!
                 return tabEnnemy[i];
