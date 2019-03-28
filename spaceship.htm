@@ -603,7 +603,7 @@
             var temps = new Date().getTime();
             if(temps - timeLastBonus >= INTERVAL_BONUS) {
                 var position = Math.random() * (1 - -1  ) + -1;
-                position = 0.5; //REMOVE
+                position = 0.5;
                 var type = typesBonus[Math.floor(Math.random()*typesBonus.length)];
                 var newBonus = new Bonus(type);
                 bonusArray.push(newBonus);
@@ -617,32 +617,48 @@
             animate();
         }
 
+        function calcLifeInterface(player) {
+            return Math.round((player.pv/player.MAX_PV)*100);
+        }
+
+        function calcSpecialShootInterface(player) {
+            return (player.ennemy)
+                ? Math.round(((new Date().getTime() - PeakatimeLastSpecialShoot)/TIME_BONUS)*100)
+                : Math.round(((new Date().getTime() - timeLastSpecialShoot))/TIME_BONUS*100);
+        }
+
+        /**
+         * Retourne le temps restant du bonus
+         * */
+        function calcBonusInterface(player) {
+                return 100-((new Date().getTime() - player.timeLastBonus)/TIME_BONUS *100);
+        }
+
         function refreshInterface() {
-            $("#lifePikachu")
-                .attr('data-content',ennemy.pv)
-                .val(ennemy.pv);
+            const LIFE_PIKACHU = calcLifeInterface(ennemy)+'%';
+            const LIFE_SPACESHIP = calcLifeInterface(spaceship)+'%';
+            const SPECIALSHOOT_PIKACHU = calcSpecialShootInterface(ennemy)+'%';
+            const SPECIALSHOOT_SPACESHIP = calcSpecialShootInterface(spaceship)+'%';
+            const BONUS_TIME_PIKACHU = calcBonusInterface(ennemy)+'%';
+            const BONUS_TIME_SPACESHIP = calcBonusInterface(spaceship)+'%';
 
-            $("#lifePlane")
-                .attr('data-content',spaceship.pv)
-                .val(spaceship.pv);
+            $("#infoPlayerPikachu div.life").css('flex-basis',LIFE_PIKACHU);
+            $("#infoPlayerSpaceship div.life").css('flex-basis',LIFE_SPACESHIP);
 
-            $("#specialShootPlane")
-                .attr('max', spaceship.intervalSpecialShoot)
-                .val(new Date().getTime() - timeLastSpecialShoot);
+            $("#infoPlayerPikachu p.life").text(ennemy.pv+'/'+ennemy.MAX_PV);
+            $("#infoPlayerSpaceship p.life").text(spaceship.pv+'/'+spaceship.MAX_PV);
 
-            $("#specialShootPikachu")
-                .attr('max', ennemy.intervalSpecialShoot)
-                .val(new Date().getTime() - PeakatimeLastSpecialShoot);
+            $("#infoPlayerPikachu div.life").css('flex-basis',LIFE_PIKACHU);
+            $("#infoPlayerSpaceship div.life").css('flex-basis',LIFE_SPACESHIP);
 
-            //Bonus pikacu
-            var typeBonus = "";
-            //Affiche TAILLE tant que le pikachu est sous resize
-            if (new Date().getTime() - timeDecreaseSizePikachu < 5000) {
-                typeBonus = "TAILLE -";
-            }
-            $("#bonusPikachu")
-                .attr('data-content', typeBonus)
-                .val(5000 - (new Date().getTime() - timeDecreaseSizePikachu));
+            $("#infoPlayerSpaceship p.bonus").text(spaceship.currentBonus);
+            $("#infoPlayerPikachu p.bonus").text(ennemy.currentBonus);
+
+            $("#infoPlayerPikachu div.bonus").css('flex-basis',BONUS_TIME_PIKACHU);
+            $("#infoPlayerSpaceship div.bonus").css('flex-basis',BONUS_TIME_SPACESHIP);
+
+            $("#infoPlayerPikachu div.specialShoot").css('flex-basis',SPECIALSHOOT_PIKACHU);
+            $("#infoPlayerSpaceship div.specialShoot").css('flex-basis',SPECIALSHOOT_SPACESHIP);
         }
 
         var tabEnnemy = [];
@@ -696,34 +712,38 @@
 
 
 <body onload="webGLStart();">
-<div class="infoPlayerPikachu">
-    <div class="specialShoot">
-        <label for="specialShootPikachu">Special shoot Pikachu</label>
-        <progress id="specialShootPikachu" max="3500" value="3500"></progress>
+<div id="infoPlayerPikachu" class="infoPlayer">
+    <p class="labelSpecialShoot">Tir spécial :</p>
+    <p class="labelBonus">BONUS :</p>
+    <p class="labelVie">Vie :</p>
+    <div class="container containerSpecialShoot">
+        <div class="specialShoot"></div>
     </div>
-    <div class="bonus">
-        <label for="bonusPikachu">Bonus Pikachu</label>
-        <progress data-html="true" id="bonusPikachu" max="5000" value="0"></progress>
+    <div class="container containerBonus">
+        <div class="bonus"></div>
+        <p class="bonus">TAILLE</p>
     </div>
-    <div class="life">
-        <label for="lifePikachu">Vie Pikachu</label>
-        <progress id="lifePikachu" data-content="100" max="100" value="100"></progress>
+    <div class="container containerLife">
+        <div class="life"></div>
+        <p class="life">100</p>
     </div>
 </div>
 
 <canvas id="SpaceShip" style="border: none;" width="800" height="800"></canvas>
-<div class="infoPlayerPlane">
-    <div class="specialShoot">
-        <label for="specialShootPlane">Special shoot Avion</label>
-        <progress id="specialShootPlane" max="3500" value="3500">TEST</progress>
+<div id="infoPlayerSpaceship" class="infoPlayer">
+    <p class="labelSpecialShoot">Tir spécial :</p>
+    <p class="labelBonus">BONUS :</p>
+    <p class="labelVie">Vie :</p>
+    <div class="container containerSpecialShoot">
+        <div class="specialShoot"></div>
     </div>
-    <div class="bonus">
-        <label for="bonusSpaceship">Bonus Spaceship</label>
-        <progress id="bonusSpaceship" max="5000" value="0"></progress>
+    <div class="container containerBonus">
+        <div class="bonus"></div>
+        <p class="bonus">TAILLE</p>
     </div>
-    <div class="life">
-        <label for="lifePlane">Vie Avion</label>
-        <progress id="lifePlane" data-content="100" max="100" value="100"></progress>
+    <div class="container containerLife">
+        <div class="life"></div>
+        <p class="life">100</p>
     </div>
 </div>
 

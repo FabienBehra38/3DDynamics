@@ -162,6 +162,8 @@ Model.prototype.initParameters = function () {
     this.pv = this.MAX_PV;
     this.intervalNormalShoot = INTERVAL_NORMAL_SHOOT;
     this.intervalSpecialShoot = INTERVAL_SPECIAL_SHOOT;
+    this.currentBonus = "";
+    this.timeLastBonus = new Date().getTime()-TIME_BONUS;
 
     // trouver les model/view/proj matrices pour voir l'objet comme vous le souhaitez
     if (this.ennemy) {

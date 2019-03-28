@@ -1,18 +1,70 @@
-.infoPlayerPikachu {
+div.specialShoot {
+    background: green;
+}
+div.bonus {
+    background: purple;
+}
+div.life {
+    background: tomato;
+}
+
+.infoPlayer {
     display: flex;
     flex-direction: row;
+    flex-wrap: wrap;
     justify-content: space-between;
     width: 800px;
     padding: 0 0 1% 0;
 }
 
-.infoPlayerPlane {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    width: 800px;
-    padding: 1% 0 0 0;
-}
+    .infoPlayer > * {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        flex-shrink: 0;
+        margin: 0;
+    }
+
+    .infoPlayer .container {
+        height: 20px;
+        background: lightgray;
+        border-radius: 10px;
+        position: relative;
+    }
+
+        .infoPlayer .container > p {
+            margin: 0;
+            position: absolute;
+            left: 50%;
+            font-weight: bold;
+            color: white;
+            top: 50%;
+            transform: translate(-50%,-50%);
+        }
+
+        .infoPlayer .container > div {
+            height: 100%;
+            text-align: center;
+            color: #ffffff;
+            font-weight: bold;
+            border-radius: 10px;
+            flex-basis: 0%;
+            transition: flex-basis;
+            transition-duration: 200ms;
+        }
+
+    .infoPlayer .containerSpecialShoot,
+    .infoPlayer .containerLife,
+    .infoPlayer .labelSpecialShoot,
+    .infoPlayer .labelVie {
+        flex-basis: 35%;
+    }
+
+    .infoPlayer .containerBonus,
+    .infoPlayer .labelBonus {
+        flex-basis: 15%;
+    }
+
 
 .specialShoot, .life{
     display: flex;
@@ -31,66 +83,66 @@
     text-align: right;
 }
 
-.specialShoot progress::-webkit-progress-value{
-    background: tomato;
-    border: none !important;
-    border-radius: 25px;
-}
+/*.specialShoot progress::-webkit-progress-value{*/
+    /*background: tomato;*/
+    /*border: none !important;*/
+    /*border-radius: 25px;*/
+/*}*/
 
-.life progress::-webkit-progress-value{
-    background: green;
-    border: none !important;
-    border-radius: 25px;
-}
+/*.life progress::-webkit-progress-value{*/
+    /*background: green;*/
+    /*border: none !important;*/
+    /*border-radius: 25px;*/
+/*}*/
 
-.bonus progress::-webkit-progress-value{
-    background: purple;
-}
+/*.bonus progress::-webkit-progress-value{*/
+    /*background: purple;*/
+/*}*/
 
-.life progress::-webkit-progress-bar {
-    background: grey;
-    border: none;
-}
+/*.life progress::-webkit-progress-bar {*/
+    /*background: grey;*/
+    /*border: none;*/
+/*}*/
 
 
-.life progress::after {
-    content: attr(data-content) "";
-    position: absolute;
-    left: 50%;
-    top: 0;
-    transform: translateX(-50%);
-    color: white;
-    font-weight: bold;
-}
+/*.life progress::after {*/
+    /*content: attr(data-content) "";*/
+    /*position: absolute;*/
+    /*left: 50%;*/
+    /*top: 0;*/
+    /*transform: translateX(-50%);*/
+    /*color: white;*/
+    /*font-weight: bold;*/
+/*}*/
 
-.bonus progress::after {
-    content: attr(data-content) "";
-    position: absolute;
-    left: 25%;
-    top: 0;
-    color: white;
-    font-weight: bold;
-}
+/*.bonus progress::after {*/
+    /*content: attr(data-content) "";*/
+    /*position: absolute;*/
+    /*left: 25%;*/
+    /*top: 0;*/
+    /*color: white;*/
+    /*font-weight: bold;*/
+/*}*/
 
-progress {
-    border: 0;
-    height: 20px;
-    border-radius: 20px;
-    width: 100%;
-    position: relative;
-}
-progress::-webkit-progress-bar {
-    border: 0;
-    height: 20px;
-    border-radius: 20px;
-}
-progress::-webkit-progress-value {
-    border: 0;
-    height: 20px;
-    border-radius: 20px;
-}
-progress::-moz-progress-bar {
-    border: 0;
-    height: 20px;
-    border-radius: 20px;
-}
+/*progress {*/
+    /*border: 0;*/
+    /*height: 20px;*/
+    /*border-radius: 20px;*/
+    /*width: 100%;*/
+    /*position: relative;*/
+/*}*/
+/*progress::-webkit-progress-bar {*/
+    /*border: 0;*/
+    /*height: 20px;*/
+    /*border-radius: 20px;*/
+/*}*/
+/*progress::-webkit-progress-value {*/
+    /*border: 0;*/
+    /*height: 20px;*/
+    /*border-radius: 20px;*/
+/*}*/
+/*progress::-moz-progress-bar {*/
+    /*border: 0;*/
+    /*height: 20px;*/
+    /*border-radius: 20px;*/
+/*}*/

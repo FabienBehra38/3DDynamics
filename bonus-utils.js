@@ -2,6 +2,7 @@ const TIME_BONUS = 5000;
 const AUGMENTATION_PV = 10;
 const INTERVAL_SPECIAL = 1500;
 const INTERVAL_NORMAL = 250;
+const BONUS_NAMES = ['SIZE','SPECIAL_SHOOT','NORMAL_SHOOT'];
 
 
 function BonusUtils () {}
@@ -19,12 +20,6 @@ BonusUtils.prototype.increaseLife = function (player) {
         }else{
             player.pv = (player.pv+AUGMENTATION_PV > player.MAX_PV) ? player.MAX_PV : player.pv += AUGMENTATION_PV;
         }
-
-        if(player == ennemy){
-            $("#lifePikachu").attr('max',player.MAX_PV).attr('value',player.pv).attr('data-content',player.pv);
-        }else{
-            $("#lifePlane").attr('max',player.MAX_PV).attr('value',player.pv).attr('data-content',player.pv);
-        }
     }
 };
 
@@ -37,8 +32,11 @@ BonusUtils.prototype.decreaseSize = function (player) {
     const factorIncrease = 1/factorDicrease;
     if( player != null ){
         player.resize(factorDicrease);
+        player.timeLastBonus = new Date().getTime();
+        player.currentBonus = BONUS_NAMES[0]; //SIZE
         setTimeout(function () {
             player.resize(factorIncrease);
+            player.currentBonus = "";
         }, TIME_BONUS);
     }
 };
@@ -51,8 +49,11 @@ BonusUtils.prototype.reduceLoadingSpecialShoot = function (player) {
 
     if( player != null ){
         player.intervalSpecialShoot = INTERVAL_SPECIAL;
+        player.timeLastBonus = new Date().getTime();
+        player.currentBonus = BONUS_NAMES[1];
         setTimeout(function () {
             player.intervalSpecialShoot = INTERVAL_SPECIAL_SHOOT;
+            player.currentBonus = "";
         }, TIME_BONUS);
     }
 };
@@ -65,8 +66,11 @@ BonusUtils.prototype.reduceLoadingNormalShoot = function (player) {
 
     if( player != null ){
         player.intervalNormalShoot = INTERVAL_NORMAL;
+        player.timeLastBonus = new Date().getTime();
+        player.currentBonus = BONUS_NAMES[2];
         setTimeout(function () {
             player.intervalNormalShoot = INTERVAL_NORMAL_SHOOT;
+            player.currentBonus = "";
         }, TIME_BONUS);
     }
 };
