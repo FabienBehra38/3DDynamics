@@ -20,22 +20,31 @@
     flex-basis: 40%;
 }
 
+.bonus {
+    display: flex;
+    flex-direction: column;
+    flex-basis: 15%;
+    text-align: center;
+}
+
 .life {
     text-align: right;
 }
 
-.life progress::-moz-progress-bar,
-.life progress::-webkit-progress-value{
+.specialShoot progress::-webkit-progress-value{
     background: tomato;
     border: none !important;
     border-radius: 25px;
 }
 
-.specialShoot progress::-moz-progress-bar,
 .life progress::-webkit-progress-value{
-    background: forestgreen;
+    background: green;
     border: none !important;
     border-radius: 25px;
+}
+
+.bonus progress::-webkit-progress-value{
+    background: purple;
 }
 
 .life progress::-webkit-progress-bar {
@@ -50,6 +59,15 @@
     left: 50%;
     top: 0;
     transform: translateX(-50%);
+    color: white;
+    font-weight: bold;
+}
+
+.bonus progress::after {
+    content: attr(data-content) "";
+    position: absolute;
+    left: 25%;
+    top: 0;
     color: white;
     font-weight: bold;
 }
