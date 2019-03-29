@@ -1,7 +1,7 @@
 var splatShader;
 
 function initBonusShader() {
-    splatShader = initShaders("splat-vs","splat-fs");
+    splatShader = initShaders("splat-vs", "splat-fs");
 
     // active ce shader
     gl.useProgram(splatShader);
@@ -17,13 +17,13 @@ function Bonus(type) {
     this.type = type;
     this.initParameters();
 
-    var wo2 = 0.5*this.width;
-    var ho2 = 0.5*this.height;
+    var wo2 = 0.5 * this.width;
+    var ho2 = 0.5 * this.height;
 
     // un tableau contenant les positions des sommets (sur CPU donc)
     var vertices = [
-        -wo2,-ho2, 0.8,
-        wo2,-ho2, 0.8,
+        -wo2, -ho2, 0.8,
+        wo2, -ho2, 0.8,
         wo2, ho2, 0.8,
         -wo2, ho2, 0.8
     ];
@@ -35,7 +35,7 @@ function Bonus(type) {
         0.0, 1.0
     ];
 
-    var tri = [0,1,2,0,2,3];
+    var tri = [0, 1, 2, 0, 2, 3];
 
 
     this.vao = gl.createVertexArray();
@@ -72,62 +72,77 @@ function Bonus(type) {
     console.log("Bonus initialized");
 }
 
-Bonus.prototype.shader = function() {
+Bonus.prototype.shader = function () {
     return splatShader;
 }
 
-Bonus.prototype.initParameters = function() {
+Bonus.prototype.initParameters = function () {
     this.width = 0.08;
     this.height = 0.08;
 
-    if (this.type === "heal") {
-        this.splatTexture = initTexture("assets/health.png");
-    } else if (this.type === "resize") {
-        this.splatTexture = initTexture("assets/resize.png");
+    switch (this.type) {
+        case "heal":
+            this.splatTexture = initTexture("assets/health.png");
+            break;
+        case "resize":
+            this.splatTexture = initTexture("assets/resize.png");
+            break;
+        case "reloadSpecialShoot":
+            this.splatTexture = initTexture("assets/reloadSpecialShoot");
+            break;
+        case "reloadNormalShoot":
+            this.splatTexture = initTexture("assets/reloadNormalShoot");
+            break;
     }
 
 }
 
-Bonus.prototype.setPosition = function(x, y) {
-    this.position = [x,y];
+Bonus.prototype.setPosition = function (x, y) {
+    this.position = [x, y];
 }
 
-Bonus.prototype.setParameters = function(elapsed) {
+Bonus.prototype.setParameters = function (elapsed) {
     // we could animate something here
     this.position[0] += 0.01;
 }
 
-Bonus.prototype.sendUniformVariables = function() {
-    if(this.loaded) {
-        gl.uniform2fv(splatShader.positionUniform,this.position);
+Bonus.prototype.sendUniformVariables = function () {
+    if (this.loaded) {
+        gl.uniform2fv(splatShader.positionUniform, this.position);
 
         // how to send a texture:
         gl.activeTexture(gl.TEXTURE0);
-        gl.bindTexture(gl.TEXTURE_2D,this.splatTexture);
+        gl.bindTexture(gl.TEXTURE_2D, this.splatTexture);
         gl.uniform1i(splatShader.texUniform, 0);
     }
 }
 
-Bonus.prototype.draw = function() {
-    if(this.loaded) {
+Bonus.prototype.draw = function () {
+    if (this.loaded) {
         gl.bindVertexArray(this.vao);
-        gl.drawElements(gl.TRIANGLES, this.triangles.numItems, gl.UNSIGNED_SHORT, 0.5   );
+        gl.drawElements(gl.TRIANGLES, this.triangles.numItems, gl.UNSIGNED_SHORT, 0.5);
         gl.bindVertexArray(null);
     }
 };
 
-Bonus.prototype.collision = function(tabEnnemy){
-    for(var i = 0; i<tabEnnemy.length; i++){
+Bonus.prototype.collision = function (tabEnnemy) {
+    for (var i = 0; i < tabEnnemy.length; i++) {
         let pos = tabEnnemy[i].getBBox();
-        if (this.position[0]+this.width/2>pos[0][0] && this.position[0]-this.width/2<pos[1][0] &&  this.position[1]+this.width/2>pos[1][1]&& this.position[1]-this.width/2<pos[0][1]){
-            return tabEnnemy[i];
+        if(tabEnnemy[i] === ennemy) { // si c'est le pikachu
+            if (this.position[0] + this.width / 2 > pos[0][0] && this.position[0] - this.width / 2 < pos[1][0] && this.position[1] + this.width / 2 > pos[1][1] && this.position[1] - this.width / 2 < pos[0][1]) {
+                return tabEnnemy[i];
+            }
+        } else {
+            if (this.position[0] + this.width / 2 > pos[1][0] && this.position[0] - this.width / 2 < pos[0][0] && this.position[1] + this.width / 2 > pos[1][1] && this.position[1] - this.width / 2 < pos[0][1]) {
+                return tabEnnemy[i];
+            }
         }
     }
     return null;
 };
 
 
-Bonus.prototype.clear = function() {
+Bonus.prototype.clear = function () {
     // clear all GPU memory
     gl.deleteBuffer(this.vertexBuffer);
     gl.deleteBuffer(this.coordBuffer);
