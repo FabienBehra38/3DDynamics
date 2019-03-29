@@ -35,6 +35,8 @@
 
 
 
+
+
     </script>
 
     <script id="heightfield-fs" type="x-shader/x-fragment">#version 300 es
@@ -99,6 +101,8 @@
 
 
 
+
+
     </script>
 
     <script id="background-vs" type="x-shader/x-vertex">#version 300 es
@@ -115,6 +119,8 @@
           // stockage de la coordonnee de texture
           vTextureCoord = aVertexCoord;
       }
+
+
 
 
 
@@ -185,6 +191,8 @@
 
 
 
+
+
     </script>
 
     <script id="model-vs" type="x-shader/x-vertex">#version 300 es
@@ -203,6 +211,8 @@
           gl_Position = uProjMatrix * uViewMatrix * uModelMatrix * vec4(aVertexPosition, 1.0);
           vNormal = mat3(inverse(transpose(uViewMatrix * uModelMatrix)))*normalize(aVertexNormal);
       }
+
+
 
 
 
@@ -245,6 +255,8 @@
 
 
 
+
+
     </script>
 
     <script id="splat-vs" type="x-shader/x-vertex">#version 300 es
@@ -269,6 +281,8 @@
 
 
 
+
+
     </script>
 
     <script id="splat-fs" type="x-shader/x-fragment">#version 300 es
@@ -283,6 +297,8 @@
 	  //outColor = vec4(alpha*vec3(1,0,0),alpha);
 	  outColor = texture(uTex, vTextureCoord);
       }
+
+
 
     </script>
 
@@ -307,10 +323,11 @@
         var prece, preceEnnemy;
         var SpaceShipTimeNow, PeakATimeNow;
         var bonusUtils = new BonusUtils();
-        var frequenceBonus = 10000;
         var timeLastBonus = new Date().getTime() - INTERVAL_BONUS;
-        var typesBonus = ["heal", "resize"];
-        var timeDecreaseSizePikachu = 0, timeDecreaseSizeSpaceship= 0;
+        var typesBonus = ["heal", "resize", "reloadSpecialShoot", "reloadNormalShoot"];
+        var timeDecreaseSizePikachu = 0, timeDecreaseSizeSpaceship = 0;
+        var timeDecreaseReloadNormalShootPikachu = 0, timeDecreaseReloadNormalShootSpaceship = 0;
+        var timeDecreaseReloadSpecialShootPikachu = 0, timeDecreaseReloadSpecialShootSpaceship = 0;
 
         function drawScene() {
             // initialisation du viewport
@@ -476,7 +493,7 @@
             if (currentlyPressedKeys[65]) { //a
                 bonusUtils.reduceLoadingSpecialShoot(spaceship);
             }
-            if(currentlyPressedKeys[186]) { //$
+            if (currentlyPressedKeys[186]) { //$
                 bonusUtils.reduceLoadingSpecialShoot(ennemy);
             }
 
@@ -484,14 +501,13 @@
             if (currentlyPressedKeys[82]) { //r
                 bonusUtils.reduceLoadingNormalShoot(spaceship);
             }
-            if(currentlyPressedKeys[220]) { //*
+            if (currentlyPressedKeys[220]) { //*
                 bonusUtils.reduceLoadingNormalShoot(ennemy);
             }
 
             //#endregion bonus
 
         }
-
 
 
         // animation
@@ -580,9 +596,23 @@
                         } else if (bonusArray[bonus].getType() === "resize") {
                             bonusUtils.decreaseSize(ennemyTouch);
                             if (ennemyTouch === spaceship) {
-                                timeDecreaseSizeSpaceship = new Date ().getTime();
+                                timeDecreaseSizeSpaceship = new Date().getTime();
                             } else {
-                                timeDecreaseSizePikachu = new Date ().getTime();
+                                timeDecreaseSizePikachu = new Date().getTime();
+                            }
+                        } else if (bonusArray[bonus].getType() === "reloadSpecialShoot") {
+                            bonusUtils.reduceLoadingSpecialShoot(ennemyTouch);
+                            if (ennemyTouch === spaceship) {
+                                timeDecreaseReloadSpecialShootSpaceship = new Date().getTime();
+                            } else {
+                                timeDecreaseReloadSpecialShootPikachu = new Date().getTime();
+                            }
+                        } else if (bonusArray[bonus].getType() === "reloadNormalShoot") {
+                            bonusUtils.reduceLoadingNormalShoot(ennemyTouch);
+                            if (ennemyTouch === spaceship) {
+                                timeDecreaseReloadNormalShootSpaceship = new Date().getTime();
+                            } else {
+                                timeDecreaseReloadNormalShootPikachu = new Date().getTime();
                             }
                         }
                         bonusArray.splice(bonusArray[bonus], 1);
@@ -601,13 +631,12 @@
 
         function tick() {
             var temps = new Date().getTime();
-            if(temps - timeLastBonus >= INTERVAL_BONUS) {
-                var position = Math.random() * (1 - -1  ) + -1;
-                position = 0.5; //REMOVE
-                var type = typesBonus[Math.floor(Math.random()*typesBonus.length)];
+            if (temps - timeLastBonus >= INTERVAL_BONUS) {
+                var position = Math.random() * (1 - -1) + -1;
+                var type = typesBonus[Math.floor(Math.random() * typesBonus.length)];
                 var newBonus = new Bonus(type);
                 bonusArray.push(newBonus);
-                newBonus.setPosition(-1,position);
+                newBonus.setPosition(-1, position);
                 newBonus.setPosDebut(position);
                 timeLastBonus = new Date().getTime();
             }
@@ -619,11 +648,11 @@
 
         function refreshInterface() {
             $("#lifePikachu")
-                .attr('data-content',ennemy.pv)
+                .attr('data-content', ennemy.pv)
                 .val(ennemy.pv);
 
             $("#lifePlane")
-                .attr('data-content',spaceship.pv)
+                .attr('data-content', spaceship.pv)
                 .val(spaceship.pv);
 
             $("#specialShootPlane")
@@ -635,14 +664,42 @@
                 .val(new Date().getTime() - PeakatimeLastSpecialShoot);
 
             //Bonus pikacu
-            var typeBonus = "";
+            var typeBonusPikachu = "";
+            var tempsRestantPikachu = 0;
             //Affiche TAILLE tant que le pikachu est sous resize
             if (new Date().getTime() - timeDecreaseSizePikachu < 5000) {
-                typeBonus = "TAILLE -";
+                typeBonusPikachu = "TAILLE -";
+                tempsRestantPikachu = 5000 - (new Date().getTime() - timeDecreaseSizePikachu);
+            } else if (new Date().getTime() - timeDecreaseReloadSpecialShootPikachu < 5000) {
+                typeBonusPikachu = "SPECIAL -";
+                tempsRestantPikachu = 5000 - (new Date().getTime() - timeDecreaseReloadSpecialShootPikachu);
+            } else if (new Date().getTime() - timeDecreaseReloadNormalShootPikachu < 5000) {
+                typeBonusPikachu = "NORMAL -";
+                tempsRestantPikachu = 5000 - (new Date().getTime() - timeDecreaseReloadNormalShootPikachu);
             }
             $("#bonusPikachu")
-                .attr('data-content', typeBonus)
-                .val(5000 - (new Date().getTime() - timeDecreaseSizePikachu));
+                .attr('data-content', typeBonusPikachu)
+                .val(tempsRestantPikachu);
+
+
+            //Bonus spaceship
+            var typeBonusSpaceship = "";
+            var tempsRestantSpaceship = 0;
+            if (new Date().getTime() - timeDecreaseSizeSpaceship < 5000) {
+                typeBonusSpaceship = "TAILLE -";
+                tempsRestantSpaceship = 5000 - (new Date().getTime() - timeDecreaseSizeSpaceship);
+            } else if (new Date().getTime() - timeDecreaseReloadSpecialShootSpaceship < 5000) {
+                typeBonusSpaceship = "SPECIAL -";
+                tempsRestantSpaceship = 5000 - (new Date().getTime() - timeDecreaseReloadSpecialShootSpaceship);
+            } else if (new Date().getTime() - timeDecreaseReloadNormalShootSpaceship < 5000) {
+                typeBonusSpaceship = "NORMAL -";
+                tempsRestantSpaceship = 5000 - (new Date().getTime() - timeDecreaseReloadNormalShootSpaceship);
+            }
+            $("#bonusSpaceship")
+                .attr('data-content', typeBonusSpaceship)
+                .val(tempsRestantSpaceship);
+
+
         }
 
         var tabEnnemy = [];
@@ -703,7 +760,7 @@
     </div>
     <div class="bonus">
         <label for="bonusPikachu">Bonus Pikachu</label>
-        <progress data-html="true" id="bonusPikachu" max="5000" value="0"></progress>
+        <progress id="bonusPikachu" max="5000" value="0"></progress>
     </div>
     <div class="life">
         <label for="lifePikachu">Vie Pikachu</label>
