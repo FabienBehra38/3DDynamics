@@ -319,6 +319,7 @@
             shootSample,
             timeNow,
             specialShoot = [];
+        var specialShootSpaceship = [], specialShootEnnemy = [];
         const speed = 0.15;
         var prece, preceEnnemy;
         var SpaceShipTimeNow, PeakATimeNow;
@@ -367,6 +368,18 @@
                 v.draw();
             });
             $.each(specialShoot, function (k, v) {
+                if (v != null) {
+                    v.sendUniformVariables();
+                    v.draw();
+                }
+            });
+            $.each(specialShootEnnemy, function (k, v) {
+                if (v != null) {
+                    v.sendUniformVariables();
+                    v.draw();
+                }
+            });
+            $.each(specialShootSpaceship, function (k, v) {
                 if (v != null) {
                     v.sendUniformVariables();
                     v.draw();
@@ -573,11 +586,61 @@
 
             }
 
+
+            for (const splat in specialShootSpaceship) {
+
+                if (specialShootSpaceship[splat] != null) {
+                    ennemyTouch = specialShootSpaceship[splat].collision(tabEnnemy);
+
+                    if (ennemyTouch != null) {
+                        specialShootSpaceship[splat] = null;
+                        hit(ennemyTouch);
+                        console.log("Point de vie : " + ennemyTouch.pv);
+                    }
+                }
+                refreshInterface();
+
+            }
+            for (const splat in specialShootEnnemy) {
+
+                if (specialShootEnnemy[splat] != null) {
+                    ennemyTouch = specialShootEnnemy[splat].collision(tabEnnemy);
+
+                    if (ennemyTouch != null) {
+                        specialShootEnnemy[splat] = null;
+                        hit(ennemyTouch);
+                        console.log("Point de vie : " + ennemyTouch.pv);
+                    }
+                }
+                refreshInterface();
+
+            }
+
+
+
             for (let i = 0; i < specialShoot.length; i++) {
                 if (specialShoot[i] != null && specialShoot[i].getPosX() < 1 && specialShoot[i].getPosX() > -1) {
                     specialShoot[i].setParameters();
                 } else {
                     specialShoot[i] = null;
+                }
+                refreshInterface();
+            }
+
+
+            for (let i = 0; i < specialShootEnnemy.length; i++) {
+                if (specialShootEnnemy[i] != null && specialShootEnnemy[i].getPosX() < 1 && specialShootEnnemy[i].getPosX() > -1) {
+                    specialShootEnnemy[i].setParameters();
+                } else {
+                    specialShootEnnemy[i] = null;
+                }
+                refreshInterface();
+            }
+            for (let i = 0; i < specialShootSpaceship.length; i++) {
+                if (specialShootSpaceship[i] != null && specialShootSpaceship[i].getPosX() < 1 && specialShootSpaceship[i].getPosX() > -1) {
+                    specialShootSpaceship[i].setParameters();
+                } else {
+                    specialShootSpaceship[i] = null;
                 }
                 refreshInterface();
             }
