@@ -125,15 +125,30 @@ Model.prototype.shootSpecial = function() {
     let lastSpecialShoot = (this.ennemy) ? PeakatimeLastSpecialShoot : timeLastSpecialShoot;
 
     if(time - lastSpecialShoot >= this.intervalSpecialShoot){
-        specialShoot = (this.ennemy)
-            ? [new Splat(0, 'bas', this), new Splat(0, 'basG', this), new Splat(0, 'basD', this)]
-            : [new Splat(0, 'haut', this), new Splat(0, 'hautG', this), new Splat(0, 'hautD', this)];
-
-        const frontObj = this.getBBox();
-        for (let i = 0; i < specialShoot.length; i++) {
-            specialShoot[i].setPosition((frontObj[0][0] + frontObj[1][0]) / 2, frontObj[0][1]);
-            specialShoot[i].setPosDebut(frontObj[0][1]);
+        if (this.ennemy) {
+            specialShootEnnemy = [new Splat(0, 'bas', this), new Splat(0, 'basG', this), new Splat(0, 'basD', this)];
+            const frontObj = this.getBBox();
+            for (let i = 0; i < specialShootEnnemy.length; i++) {
+                specialShootEnnemy[i].setPosition((frontObj[0][0] + frontObj[1][0]) / 2, frontObj[0][1]);
+                specialShootEnnemy[i].setPosDebut(frontObj[0][1]);
+            }
+        } else {
+            specialShootSpaceship = [new Splat(0, 'haut', this), new Splat(0, 'hautG', this), new Splat(0, 'hautD', this)];
+            const frontObj = this.getBBox();
+            for (let i = 0; i < specialShootSpaceship.length; i++) {
+                specialShootSpaceship[i].setPosition((frontObj[0][0] + frontObj[1][0]) / 2, frontObj[0][1]);
+                specialShootSpaceship[i].setPosDebut(frontObj[0][1]);
+            }
         }
+        // specialShoot = (this.ennemy)
+        //     ? [new Splat(0, 'bas', this), new Splat(0, 'basG', this), new Splat(0, 'basD', this)]
+        //     : [new Splat(0, 'haut', this), new Splat(0, 'hautG', this), new Splat(0, 'hautD', this)];
+        //
+        // const frontObj = this.getBBox();
+        // for (let i = 0; i < specialShoot.length; i++) {
+        //     specialShoot[i].setPosition((frontObj[0][0] + frontObj[1][0]) / 2, frontObj[0][1]);
+        //     specialShoot[i].setPosDebut(frontObj[0][1]);
+        // }
 
         (this.ennemy) ? PeakatimeLastSpecialShoot = new Date().getTime(): timeLastSpecialShoot  = new Date().getTime();
     }
