@@ -9,7 +9,6 @@ function initBackgroundShader() {
     // adresse de la texture uHeightfield dans le shader
     backgroundShader.heightfieldUniform = gl.getUniformLocation(backgroundShader, "uHeightfield");
     
-    console.log("background shader initialized");
 }
 
 function Background(heightfieldTexture) {
@@ -65,7 +64,6 @@ function Background(heightfieldTexture) {
 
     gl.bindVertexArray(null);
 
-    console.log("background initialized");
 }
 
 Background.prototype.shader = function() {

@@ -13,7 +13,6 @@ function BonusUtils () {}
  */
 BonusUtils.prototype.increaseLife = function (player) {
     if(player != null){
-        console.log("pv : "+player.pv+ " && MAX : "+player.MAX_PV);
         if (player.pv === player.MAX_PV) {
             player.MAX_PV += AUGMENTATION_PV;
             player.pv = player.MAX_PV;

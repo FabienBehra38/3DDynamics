@@ -11,7 +11,6 @@ function initSplatShader() {
     splatShader.positionUniform = gl.getUniformLocation(splatShader, "uPosition");
     splatShader.texUniform = gl.getUniformLocation(splatShader, "uTex");
 
-    console.log("splat shader initialized");
 }
 
 function Splat(textureFileName, deplacement = 'haut', player) {
@@ -71,7 +70,6 @@ function Splat(textureFileName, deplacement = 'haut', player) {
 
     this.loaded = true;
 
-    console.log("splat initialized");
 }
 
 Splat.prototype.shader = function () {
@@ -157,13 +155,11 @@ Splat.prototype.collision = function (tabPlayers) {
             if(this.player.ennemy){ // si c'est le pikachu
                 if (this.position[0] > pos[1][0] && this.position[0] < pos[0][0] // si splat[x] est compris en obj[xMin] et obj[xMax]
                     && this.position[1] > pos[1][1] && this.position[1] < pos[0][1]) { //HitBox en 3D à changé !!!!!
-                    console.log("testEnnemy");
                     return tabPlayers[i];
                 }
             }else{
                 if (this.position[0] > pos[0][0] && this.position[0] < pos[1][0] // si splat[x] est compris en obj[xMin] et obj[xMax]
                     && this.position[1] > pos[1][1] && this.position[1] < pos[0][1]) { //HitBox en 3D à changé !!!!!
-                    console.log("test")
                     return tabPlayers[i];
                 }
             }
