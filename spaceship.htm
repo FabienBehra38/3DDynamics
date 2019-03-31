@@ -623,8 +623,8 @@
 
         function calcSpecialShootInterface(player) {
             return (player.ennemy)
-                ? Math.round(((new Date().getTime() - PeakatimeLastSpecialShoot)/TIME_BONUS)*100)
-                : Math.round(((new Date().getTime() - timeLastSpecialShoot))/TIME_BONUS*100);
+                ? Math.round(((new Date().getTime() - PeakatimeLastSpecialShoot)/player.intervalSpecialShoot)*100)
+                : Math.round(((new Date().getTime() - timeLastSpecialShoot)/player.intervalSpecialShoot)*100);
         }
 
         /**

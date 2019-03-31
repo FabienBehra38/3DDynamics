@@ -49,6 +49,9 @@ div.life {
             font-weight: bold;
             border-radius: 10px;
             flex-basis: 0%;
+        }
+
+        .infoPlayer .container > div.life {
             transition: flex-basis;
             transition-duration: 200ms;
         }
