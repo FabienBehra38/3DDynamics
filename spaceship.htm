@@ -37,6 +37,7 @@
 
 
 
+
     </script>
 
     <script id="heightfield-fs" type="x-shader/x-fragment">#version 300 es
@@ -103,6 +104,7 @@
 
 
 
+
     </script>
 
     <script id="background-vs" type="x-shader/x-vertex">#version 300 es
@@ -119,6 +121,7 @@
           // stockage de la coordonnee de texture
           vTextureCoord = aVertexCoord;
       }
+
 
 
 
@@ -193,6 +196,7 @@
 
 
 
+
     </script>
 
     <script id="model-vs" type="x-shader/x-vertex">#version 300 es
@@ -211,6 +215,7 @@
           gl_Position = uProjMatrix * uViewMatrix * uModelMatrix * vec4(aVertexPosition, 1.0);
           vNormal = mat3(inverse(transpose(uViewMatrix * uModelMatrix)))*normalize(aVertexNormal);
       }
+
 
 
 
@@ -257,6 +262,7 @@
 
 
 
+
     </script>
 
     <script id="splat-vs" type="x-shader/x-vertex">#version 300 es
@@ -283,6 +289,7 @@
 
 
 
+
     </script>
 
     <script id="splat-fs" type="x-shader/x-fragment">#version 300 es
@@ -297,6 +304,7 @@
 	  //outColor = vec4(alpha*vec3(1,0,0),alpha);
 	  outColor = texture(uTex, vTextureCoord);
       }
+
 
 
 
@@ -548,6 +556,16 @@
             ennemy.hitted();
             if (ennemy.isDead()) {
                 tabEnnemy.splice(tabEnnemy[ennemy], 1);
+                var img = document.createElement("img");
+                if (ennemy.ennemy) {
+                    img.setAttribute("src", "PlaneWin.png");
+                } else {
+                    img.setAttribute("src", "PeakaWin.png");
+                }
+
+                img.setAttribute("width", "800");
+                img.setAttribute("height", "800");
+                document.getElementById("SpaceShip").replaceWith(img);
                 ennemy.clear();
             }
         }
@@ -612,7 +630,6 @@
                 refreshInterface();
 
             }
-
 
 
             for (let i = 0; i < specialShoot.length; i++) {
@@ -707,47 +724,47 @@
         }
 
         function calcLifeInterface(player) {
-            return Math.round((player.pv/player.MAX_PV)*100);
+            return Math.round((player.pv / player.MAX_PV) * 100);
         }
 
         function calcSpecialShootInterface(player) {
             return (player.ennemy)
-                ? Math.round(((new Date().getTime() - PeakatimeLastSpecialShoot)/player.intervalSpecialShoot)*100)
-                : Math.round(((new Date().getTime() - timeLastSpecialShoot)/player.intervalSpecialShoot)*100);
+                ? Math.round(((new Date().getTime() - PeakatimeLastSpecialShoot) / player.intervalSpecialShoot) * 100)
+                : Math.round(((new Date().getTime() - timeLastSpecialShoot) / player.intervalSpecialShoot) * 100);
         }
 
         /**
          * Retourne le temps restant du bonus
          * */
         function calcBonusInterface(player) {
-                return 100-((new Date().getTime() - player.timeLastBonus)/TIME_BONUS *100);
+            return 100 - ((new Date().getTime() - player.timeLastBonus) / TIME_BONUS * 100);
         }
 
         function refreshInterface() {
-            const LIFE_PIKACHU = calcLifeInterface(ennemy)+'%';
-            const LIFE_SPACESHIP = calcLifeInterface(spaceship)+'%';
-            const SPECIALSHOOT_PIKACHU = calcSpecialShootInterface(ennemy)+'%';
-            const SPECIALSHOOT_SPACESHIP = calcSpecialShootInterface(spaceship)+'%';
-            const BONUS_TIME_PIKACHU = calcBonusInterface(ennemy)+'%';
-            const BONUS_TIME_SPACESHIP = calcBonusInterface(spaceship)+'%';
+            const LIFE_PIKACHU = calcLifeInterface(ennemy) + '%';
+            const LIFE_SPACESHIP = calcLifeInterface(spaceship) + '%';
+            const SPECIALSHOOT_PIKACHU = calcSpecialShootInterface(ennemy) + '%';
+            const SPECIALSHOOT_SPACESHIP = calcSpecialShootInterface(spaceship) + '%';
+            const BONUS_TIME_PIKACHU = calcBonusInterface(ennemy) + '%';
+            const BONUS_TIME_SPACESHIP = calcBonusInterface(spaceship) + '%';
 
-            $("#infoPlayerPikachu div.life").css('flex-basis',LIFE_PIKACHU);
-            $("#infoPlayerSpaceship div.life").css('flex-basis',LIFE_SPACESHIP);
+            $("#infoPlayerPikachu div.life").css('flex-basis', LIFE_PIKACHU);
+            $("#infoPlayerSpaceship div.life").css('flex-basis', LIFE_SPACESHIP);
 
-            $("#infoPlayerPikachu p.life").text(ennemy.pv+'/'+ennemy.MAX_PV);
-            $("#infoPlayerSpaceship p.life").text(spaceship.pv+'/'+spaceship.MAX_PV);
+            $("#infoPlayerPikachu p.life").text(ennemy.pv + '/' + ennemy.MAX_PV);
+            $("#infoPlayerSpaceship p.life").text(spaceship.pv + '/' + spaceship.MAX_PV);
 
-            $("#infoPlayerPikachu div.life").css('flex-basis',LIFE_PIKACHU);
-            $("#infoPlayerSpaceship div.life").css('flex-basis',LIFE_SPACESHIP);
+            $("#infoPlayerPikachu div.life").css('flex-basis', LIFE_PIKACHU);
+            $("#infoPlayerSpaceship div.life").css('flex-basis', LIFE_SPACESHIP);
 
             $("#infoPlayerSpaceship p.bonus").text(spaceship.currentBonus);
             $("#infoPlayerPikachu p.bonus").text(ennemy.currentBonus);
 
-            $("#infoPlayerPikachu div.bonus").css('flex-basis',BONUS_TIME_PIKACHU);
-            $("#infoPlayerSpaceship div.bonus").css('flex-basis',BONUS_TIME_SPACESHIP);
+            $("#infoPlayerPikachu div.bonus").css('flex-basis', BONUS_TIME_PIKACHU);
+            $("#infoPlayerSpaceship div.bonus").css('flex-basis', BONUS_TIME_SPACESHIP);
 
-            $("#infoPlayerPikachu div.specialShoot").css('flex-basis',SPECIALSHOOT_PIKACHU);
-            $("#infoPlayerSpaceship div.specialShoot").css('flex-basis',SPECIALSHOOT_SPACESHIP);
+            $("#infoPlayerPikachu div.specialShoot").css('flex-basis', SPECIALSHOOT_PIKACHU);
+            $("#infoPlayerSpaceship div.specialShoot").css('flex-basis', SPECIALSHOOT_SPACESHIP);
         }
 
         var tabEnnemy = [];
@@ -794,6 +811,11 @@
             // dessine la scene
             tick();
         }
+        function rejouer(){
+            location.reload();
+        }
+
+
     </script>
 
 
@@ -835,6 +857,8 @@
         <p class="life">100</p>
     </div>
 </div>
+
+<button onclick="rejouer()">Rejouer</button>
 
 </body>
 </html>
